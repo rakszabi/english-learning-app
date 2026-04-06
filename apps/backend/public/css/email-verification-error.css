@@ -1,0 +1,111 @@
+* {
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: #0f172a;
+}
+
+.email-verification-error {
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.email-verification-error .box {
+  background-color: #fff;
+  border: 1px solid #ef4444;
+  box-shadow: 0 2px 4px #ef444433;
+  border-radius: 12px;
+  padding: 2rem;
+  min-width: 400px;
+  text-align: center;
+}
+
+.error-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem auto;
+}
+
+.email-verification-error .box h1 {
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  color: #ef4444;
+}
+
+.message {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  color: #374151;
+}
+
+.info {
+  font-size: 1rem;
+  margin: 0;
+  color: #6b7280;
+}
+
+.support {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.support span {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.support a {
+  font-size: 1rem;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+
+@media only screen and (max-width: 991px) {
+  .email-verification-error .box {
+    border-radius: 10px;
+    padding: 1.5rem;
+    min-width: 320px;
+  }
+  
+  .email-verification-error .box h1 {
+    font-size: 1.25rem;
+  }
+  
+  .message {
+    font-size: 1rem;
+  }
+  
+  .error-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+}

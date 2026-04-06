@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+*.logs
+logs/
+
+# Uploaded files
+uploads/
+
+# Angular cache
+.angular/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/

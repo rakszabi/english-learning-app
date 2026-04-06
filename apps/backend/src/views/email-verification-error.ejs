@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/email-verification-error.css" />
+  </head>
+  <body>
+    <section class="email-verification-error">
+      <div class="box">
+        <div class="error-icon">✗</div>
+        <h1><%= title %></h1>
+        <p class="message"><%= message %></p>
+        <p class="info">
+          Kérjük, próbáld újra vagy vedd fel velünk a kapcsolatot.
+        </p>
+        <div class="support">
+          <span><%= supportName %></span>
+          <a href="mailto:<%= supportEmail %>">
+            <span style="margin-right: 0.5rem;">📧</span><%= supportEmail %>
+          </a>
+          <a href="tel:<%= supportTelephone %>">
+            <span style="margin-right: 0.5rem;">📞</span><%= supportTelephone %>
+          </a>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

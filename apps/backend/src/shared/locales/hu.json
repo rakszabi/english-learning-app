@@ -1,0 +1,113 @@
+{
+  "errors": {
+    "USER": {
+      "NOT_FOUND": "Felhasználó nem található!",
+      "EMAIL_EXISTS": "Foglalt e-mail cím!",
+      "PASSWORD_MISMATCH": "Hiba! A régi jelszó nem egyezik!",
+      "CREATE_FAILED": "Sikertelen felhasználó létrehozás!",
+      "UPDATE_FAILED": "Sikertelen felhasználó frissítés!",
+      "DELETE_FAILED": "Sikertelen felhasználó törlés!",
+      "QUERY_FAILED": "Sikertelen lekérdezés!",
+      "PASSWORD_CHANGE_FAILED": "Sikertelen jelszó módosítás!"
+    },
+    "FILE": {
+      "NOT_FOUND": "Fájl nem található!",
+      "INVALID_FILE": "Érvénytelen fájl!",
+      "FILE_TOO_LARGE": "A fájl túl nagy!",
+      "INVALID_FILE_TYPE": "Nem támogatott fájltípus!",
+      "UPLOAD_FAILED": "Sikertelen fájl feltöltés!",
+      "UPDATE_FAILED": "Sikertelen fájl frissítés!",
+      "DELETE_FAILED": "Sikertelen fájl törlés!",
+      "QUERY_FAILED": "Sikertelen lekérdezés!"
+    },
+    "EMAIL_VERIFICATION": {
+      "TOKEN_EXPIRED": "A verifikációs link lejárt!",
+      "TOKEN_INVALID": "Érvénytelen verifikációs token!",
+      "ALREADY_VERIFIED": "Az email cím már verifikálva van!",
+      "SEND_FAILED": "Sikertelen email küldés!"
+    },
+    "PASSWORD_RESET": {
+      "TOKEN_EXPIRED": "A jelszó visszaállítási link lejárt!",
+      "TOKEN_INVALID": "Érvénytelen jelszó visszaállítási token!",
+      "SUBMIT_FAILED": "Sikertelen jelszó visszaállítás!",
+      "REQUEST_FAILED": "Sikertelen jelszó visszaállítási kérés!"
+    },
+    "AUTH": {
+      "INVALID_CREDENTIALS": "Hibás e-mail cím vagy jelszó!",
+      "USER_NOT_FOUND": "Felhasználó nem található!",
+      "USER_INACTIVE": "A felhasználó inaktív!",
+      "EMAIL_NOT_VERIFIED": "Az email cím még nincs verifikálva!",
+      "INSUFFICIENT_PERMISSIONS": "Nincs jogosultságod!",
+      "JWT_EXPIRED": "Lejárt munkamenet!",
+      "JWT_MISSING": "Nincs jogosultságod!",
+      "REFRESH_TOKEN_EXPIRED": "Lejárt munkamenet, jelentkezz be újra!"
+    },
+    "DIALOGUE": {
+      "NOT_FOUND": "A dialóg nem található!",
+      "CREATE_FAILED": "Sikertelen dialóg létrehozás!",
+      "UPDATE_FAILED": "Sikertelen dialóg frissítés!",
+      "DELETE_FAILED": "Sikertelen dialóg törlés!",
+      "QUERY_FAILED": "Sikertelen lekérdezés!"
+    },
+    "DIALOGUE_PRACTICE": {
+      "NOT_FOUND": "A gyakorlat nem található!",
+      "CREATE_FAILED": "Sikertelen gyakorlat létrehozás!",
+      "UPDATE_FAILED": "Sikertelen gyakorlat frissítés!",
+      "DELETE_FAILED": "Sikertelen gyakorlat törlés!",
+      "QUERY_FAILED": "Sikertelen lekérdezés!"
+    },
+    "GENERAL": {
+      "INTERNAL_ERROR": "Belső szerver hiba!",
+      "VALIDATION_ERROR": "Érvényesítési hiba!",
+      "NOT_FOUND": "Elem nem található!",
+      "UNAUTHORIZED": "Nincs jogosultságod!",
+      "FORBIDDEN": "Hozzáférés megtagadva!",
+      "BAD_REQUEST": "Hibás kérés!"
+    }
+  },
+  "success": {
+    "DIALOGUE": {
+      "CREATE_SUCCESS": "👍 Sikeres dialóg létrehozás!",
+      "UPDATE_SUCCESS": "👍 Sikeres dialóg frissítés!",
+      "DELETE_SUCCESS": "👍 Sikeres dialóg törlés!",
+      "QUERY_SUCCESS": "👍 Sikeres lekérdezés!"
+    },
+    "DIALOGUE_PRACTICE": {
+      "CREATE_SUCCESS": "👍 Sikeres gyakorlat létrehozás!",
+      "UPDATE_SUCCESS": "👍 Sikeres gyakorlat frissítés!",
+      "DELETE_SUCCESS": "👍 Sikeres gyakorlat törlés!",
+      "QUERY_SUCCESS": "👍 Sikeres lekérdezés!"
+    },
+    "GENERAL": {
+      "QUERY_SUCCESS": "👍 Sikeres lekérdezés!"
+    },
+    "USER": {
+      "CREATE_SUCCESS": "👍 Sikeres felhasználó létrehozás!",
+      "UPDATE_SUCCESS": "👍 Sikeres frissítés!",
+      "DELETE_SUCCESS": "👍 Sikeres törlés!",
+      "QUERY_SUCCESS": "👍 Sikeres lekérdezés!",
+      "PASSWORD_CHANGE_SUCCESS": "👍 Sikeres jelszó módosítás!",
+      "REGISTRATION_SUCCESS": "👍 Sikeres regisztráció! Ellenőrizd az email címedet a verifikációhoz!"
+    },
+    "FILE": {
+      "UPLOAD_SUCCESS": "👍 Sikeres fájl feltöltés!",
+      "UPDATE_SUCCESS": "👍 Sikeres fájl frissítés!",
+      "DELETE_SUCCESS": "👍 Sikeres fájl törlés!",
+      "QUERY_SUCCESS": "👍 Sikeres lekérdezés!"
+    },
+    "AUTH": {
+      "LOGIN_SUCCESS": "👍 Sikeres bejelentkezés!",
+      "LOGOUT_SUCCESS": "👍 Sikeres kijelentkezés!",
+      "REGISTER_SUCCESS": "👍 Sikeres regisztráció!",
+      "REFRESH_SUCCESS": "👍 Sikeres token frissítés!"
+    },
+    "EMAIL_VERIFICATION": {
+      "SEND_SUCCESS": "👍 Sikeres email küldés!",
+      "VERIFY_SUCCESS": "👍 Sikeres email verifikáció!"
+    },
+    "PASSWORD_RESET": {
+      "REQUEST_SUCCESS": "👍 Sikeres jelszó visszaállítási kérés!",
+      "RESET_SUCCESS": "👍 Sikeres jelszó visszaállítás!"
+    }
+  }
+}
