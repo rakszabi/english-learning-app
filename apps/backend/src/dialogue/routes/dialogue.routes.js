@@ -13,6 +13,7 @@ router.get("/:id", verifyToken, checkUserStatus, dialogueController.getDialogueB
 
 // Admin routes
 router.post("/admin/generate-topics", verifyAdminToken, checkUserStatus, dialogueController.generateTopics);
+router.post("/admin/generate", verifyAdminToken, checkUserStatus, dialogueController.generateDialogue);
 router.post("/admin", verifyAdminToken, checkUserStatus, dialogueController.createDialogue);
 router.post("/admin/query", verifyAdminToken, checkUserStatus, dialogueController.queryDialogues);
 router.get("/admin/all", verifyAdminToken, checkUserStatus, dialogueController.getAllDialogues);

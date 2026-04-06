@@ -1,5 +1,6 @@
 const dialogueService = require("../services/dialogue.service");
 const dialogueTopicGeneratorService = require("../services/dialogue-topic-generator.service");
+const dialogueGeneratorService = require("../services/dialogue-generator.service");
 const { ERROR_CODES } = require("../../shared/response-helpers/response-helper");
 const { DialogueErrors, handleError } = require("../../shared/response-helpers/error-helper");
 const { SUCCESS_CODES, handleSuccess } = require("../../shared/response-helpers/success-helper");
@@ -64,10 +65,26 @@ class DialogueController {
     }
   }
 
+  async generateDialogue(req, res) {
+    try {
+      const { topic } = req.body;
+      if (!topic) {
+        return res.status(400).json({ status: "FAILED", message: "A topic megadása kötelező.", errorCode: "DIALOGUE.MISSING_TOPIC" });
+      }
+
+      const dialogJson = await dialogueGeneratorService.generateDialogue(topic);
+      const dialogue = await dialogueService.createDialogue({ topic, dialogJson });
+
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.CREATE_SUCCESS, dialogue);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.CREATE_FAILED);
+    }
+  }
+
   async generateTopics(req, res) {
     try {
-      const count = parseInt(req.query.count) || 20;
-      const existingTopics = req.body.existingTopics ?? [];
+      const count = parseInt(req.query.count) || 10;
+      const existingTopics = req.body?.existingTopics ?? [];
       const topics = await dialogueTopicGeneratorService.generateTopics(count, existingTopics);
       handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, topics);
     } catch (error) {

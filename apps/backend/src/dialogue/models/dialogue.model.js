@@ -11,6 +11,10 @@ const Dialogue = sequelize.define("Dialogue", {
     type: DataTypes.JSON,
     allowNull: false,
   },
+  topic: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Dialogue;

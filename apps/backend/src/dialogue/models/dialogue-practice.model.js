@@ -20,6 +20,7 @@ const DialoguePractice = sequelize.define("DialoguePractice", {
   learningDate: {
     type: DataTypes.DATEONLY,
     allowNull: false,
+    defaultValue: DataTypes.NOW,
   },
   score: {
     type: DataTypes.ENUM("EASY", "MEDIUM", "HARD"),
