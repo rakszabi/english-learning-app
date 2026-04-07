@@ -1,4 +1,123 @@
-<section>
-  <h2>Registration Page</h2>
-  <p>Ide kerul majd a regisztracios form.</p>
-</section>
+<div class="reg-page">
+  <span class="bg-bubble bg-bubble--1"></span>
+  <span class="bg-bubble bg-bubble--2"></span>
+
+  <div class="reg">
+
+    <!-- Success state -->
+    @if (registeredEmail()) {
+      <div class="reg__success">
+        <div class="reg__success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h2 class="reg__success-title">Majdnem kész!</h2>
+        <p class="reg__success-text">
+          Megerősítő e-mailt küldtünk a<br />
+          <strong>{{ registeredEmail() }}</strong><br />
+          címre. Kattints a levélben lévő linkre a fiók aktiválásához.
+        </p>
+        <a routerLink="/login" class="reg__success-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Vissza a bejelentkezéshez
+        </a>
+      </div>
+    }
+
+    <!-- Registration form -->
+    @if (!registeredEmail()) {
+      <div class="reg__card">
+        <header class="reg__header">
+          <div class="reg__logo">ELA</div>
+          <h1 class="reg__title">Hozz létre fiókot</h1>
+          <p class="reg__subtitle">
+            Már van fiókod?
+            <a routerLink="/login" class="reg__inline-link">Jelentkezz be</a>
+          </p>
+        </header>
+
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          class="reg__form"
+          novalidate
+        >
+          @if (serverError()) {
+            <div class="reg__server-error" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              {{ serverError() }}
+            </div>
+          }
+
+          <div class="reg__name-row">
+            <app-input
+              formControlName="firstname"
+              label="Keresztnév"
+              placeholder="pl. Péter"
+              autocomplete="given-name"
+              [error]="firstnameError"
+            />
+            <app-input
+              formControlName="lastname"
+              label="Vezetéknév"
+              placeholder="pl. Nagy"
+              autocomplete="family-name"
+              [error]="lastnameError"
+            />
+          </div>
+
+          <app-input
+            formControlName="email"
+            label="E-mail cím"
+            type="email"
+            placeholder="pelda@email.com"
+            autocomplete="email"
+            [error]="emailError"
+          />
+
+          <app-input
+            formControlName="password"
+            label="Jelszó"
+            type="password"
+            placeholder="Legalább 8 karakter"
+            autocomplete="new-password"
+            [error]="passwordError"
+          />
+
+          <app-input
+            formControlName="confirmPassword"
+            label="Jelszó megerősítése"
+            type="password"
+            placeholder="Ismételd meg a jelszót"
+            autocomplete="new-password"
+            [error]="confirmPasswordError"
+          />
+
+          <app-button
+            type="submit"
+            size="lg"
+            [loading]="loading()"
+            [fullWidth]="true"
+          >
+            Regisztráció
+          </app-button>
+
+          <p class="reg__terms">
+            A regisztrációval elfogadod az
+            <a href="#" class="reg__inline-link">Általános Szerződési Feltételeket</a>
+            és az
+            <a href="#" class="reg__inline-link">Adatkezelési Tájékoztatót</a>.
+          </p>
+        </form>
+      </div>
+    }
+
+  </div>
+</div>

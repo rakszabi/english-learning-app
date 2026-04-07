@@ -1,4 +1,120 @@
-<section>
-  <h2>Login Page</h2>
-  <p>Ide kerul majd a bejelentkezes form.</p>
-</section>
+<div class="login">
+
+  <!-- Left brand panel -->
+  <div class="login__brand" aria-hidden="true">
+    <span class="bubble bubble--1"></span>
+    <span class="bubble bubble--2"></span>
+    <span class="bubble bubble--3"></span>
+
+    <div class="login__brand-inner">
+      <div class="login__brand-logo">
+        <span>ELA</span>
+      </div>
+
+      <h1 class="login__brand-title">
+        Tanulj angolul,<br />a te tempódban.
+      </h1>
+      <p class="login__brand-subtitle">
+        AI-alapú párbeszéd-gyakorlás, amely<br />alkalmazkodik a te szintedhez és céljaidhoz.
+      </p>
+
+      <ul class="login__features">
+        <li class="login__feature">
+          <span class="login__feature-check">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Valós idejű AI visszajelzés
+        </li>
+        <li class="login__feature">
+          <span class="login__feature-check">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Testreszabott tanulási útvonal
+        </li>
+        <li class="login__feature">
+          <span class="login__feature-check">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Természetes párbeszéd-szimulációk
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="login__panel">
+    <div class="login__form-container">
+
+      <div class="login__form-header">
+        <div class="login__mobile-logo">ELA</div>
+        <h2 class="login__title">Üdv újra!</h2>
+        <p class="login__desc">
+          Nincs még fiókod?
+          <a routerLink="/registration" class="login__inline-link">Regisztrálj ingyen</a>
+        </p>
+      </div>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        class="login__form"
+        novalidate
+      >
+        @if (serverError()) {
+          <div class="login__server-error" role="alert">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {{ serverError() }}
+          </div>
+        }
+
+        <div class="login__fields">
+          <app-input
+            formControlName="email"
+            label="E-mail cím"
+            type="email"
+            placeholder="pelda@email.com"
+            autocomplete="email"
+            [error]="emailError"
+          />
+
+          <div class="login__password-group">
+            <app-input
+              formControlName="password"
+              label="Jelszó"
+              type="password"
+              placeholder="Legalább 8 karakter"
+              autocomplete="current-password"
+              [error]="passwordError"
+            />
+            <div class="login__forgot-row">
+              <a routerLink="/forgot-password" class="login__forgot-link">
+                Elfelejtetted a jelszavadat?
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <app-button
+          type="submit"
+          size="lg"
+          [loading]="loading()"
+          [fullWidth]="true"
+        >
+          Bejelentkezés
+        </app-button>
+      </form>
+
+    </div>
+  </div>
+
+</div>

@@ -1,17 +1,18 @@
-<main class="app-shell">
-  <header class="app-header">
-    <h1>English Learning App</h1>
-    <nav class="app-nav">
-      <a routerLink="/dashboard">Dashboard</a>
-      <a routerLink="/dialogues">Dialogues</a>
-      <a routerLink="/profile">Profile</a>
-      <a routerLink="/login">Login</a>
-      <a routerLink="/registration">Registration</a>
-      <a routerLink="/forgot-password">Forgot Password</a>
-    </nav>
-  </header>
-
-  <section class="app-content">
-    <router-outlet />
-  </section>
-</main>
+@if (isAuthPage) {
+  <router-outlet />
+} @else {
+  <main class="app-shell">
+    <header class="app-header">
+      <h1>English Learning App</h1>
+      <nav class="app-nav">
+        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dialogues">Dialogues</a>
+        <a routerLink="/profile">Profile</a>
+        <button class="app-nav__logout" (click)="logout()">Kilépés</button>
+      </nav>
+    </header>
+    <section class="app-content">
+      <router-outlet />
+    </section>
+  </main>
+}
