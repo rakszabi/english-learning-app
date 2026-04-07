@@ -8,11 +8,14 @@ const {
 } = require("../../user/middlewares/auth.middleware");
 
 // Authenticated user routes
+router.get("/unpracticed/count", verifyToken, checkUserStatus, dialogueController.countUnpracticed);
+router.get("/unpracticed", verifyToken, checkUserStatus, dialogueController.getUnpracticed);
 router.get("/", verifyToken, checkUserStatus, dialogueController.getAllDialogues);
 router.get("/:id", verifyToken, checkUserStatus, dialogueController.getDialogueById);
 
 // Admin routes
 router.post("/admin/generate-topics", verifyAdminToken, checkUserStatus, dialogueController.generateTopics);
+router.post("/admin/generate-topics-unique", verifyAdminToken, checkUserStatus, dialogueController.generateUniqueTopics);
 router.post("/admin/generate", verifyAdminToken, checkUserStatus, dialogueController.generateDialogue);
 router.post("/admin", verifyAdminToken, checkUserStatus, dialogueController.createDialogue);
 router.post("/admin/query", verifyAdminToken, checkUserStatus, dialogueController.queryDialogues);

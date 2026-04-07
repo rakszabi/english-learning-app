@@ -9,6 +9,7 @@ const {
 
 // Authenticated user routes
 router.post("/", verifyToken, checkUserStatus, dialoguePracticeController.createPractice);
+router.get("/review", verifyToken, checkUserStatus, dialoguePracticeController.getNextPractice);
 router.get("/", verifyToken, checkUserStatus, dialoguePracticeController.getMyPractices);
 router.get("/:id", verifyToken, checkUserStatus, dialoguePracticeController.getPracticeById);
 router.put("/:id", verifyToken, checkUserStatus, dialoguePracticeController.updatePractice);

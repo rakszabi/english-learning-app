@@ -1,4 +1,6 @@
+const { Op } = require("sequelize");
 const Dialogue = require("../models/dialogue.model");
+const DialoguePractice = require("../models/dialogue-practice.model");
 const queryDatabase = require("../../shared/database-helpers/query.helper");
 const { DialogueErrors } = require("../../shared/response-helpers/error-helper");
 
@@ -12,6 +14,11 @@ class DialogueService {
     return await Dialogue.findAll({
       order: [["createdAt", "DESC"]],
     });
+  }
+
+  async getAllTopics() {
+    const dialogues = await Dialogue.findAll({ attributes: ["topic"] });
+    return dialogues.map((d) => d.topic);
   }
 
   async getDialogueById(id) {
@@ -32,6 +39,38 @@ class DialogueService {
     if (!dialogue) throw DialogueErrors.notFound();
     await dialogue.destroy();
     return true;
+  }
+
+  async countUnpracticedByUser(userId) {
+    return await Dialogue.count({
+      include: [
+        {
+          model: DialoguePractice,
+          as: "practices",
+          required: false,
+          where: { userId },
+          attributes: [],
+        },
+      ],
+      where: { "$practices.id$": { [Op.is]: null } },
+    });
+  }
+
+  async getUnpracticedByUser(userId) {
+    return await Dialogue.findAll({
+      attributes: ["id", "topic", "createdAt"],
+      include: [
+        {
+          model: DialoguePractice,
+          as: "practices",
+          required: false,
+          where: { userId },
+          attributes: [],
+        },
+      ],
+      where: { "$practices.id$": { [Op.is]: null } },
+      order: [["createdAt", "DESC"]],
+    });
   }
 
   async queryDialogues({ pagination, sort, search, filters }) {

@@ -55,6 +55,22 @@ class DialoguePracticeController {
     }
   }
 
+  async getNextPractice(req, res) {
+    try {
+      const dialogue = await dialoguePracticeService.getNextPracticeDialogue(req.decoded.id);
+      if (!dialogue) {
+        return res.status(404).json({
+          status: "FAILED",
+          message: "Nincs gyakorolható dialógus.",
+          errorCode: "DIALOGUE_PRACTICE.NONE_AVAILABLE",
+        });
+      }
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE_PRACTICE.QUERY_SUCCESS, dialogue);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE_PRACTICE.QUERY_FAILED);
+    }
+  }
+
   async queryPractices(req, res) {
     try {
       const { pagination, sort, search, filters } = req.body;

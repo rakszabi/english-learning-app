@@ -65,6 +65,24 @@ class DialogueController {
     }
   }
 
+  async getUnpracticed(req, res) {
+    try {
+      const dialogues = await dialogueService.getUnpracticedByUser(req.decoded.id);
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, dialogues);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.QUERY_FAILED);
+    }
+  }
+
+  async countUnpracticed(req, res) {
+    try {
+      const count = await dialogueService.countUnpracticedByUser(req.decoded.id);
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, { count });
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.QUERY_FAILED);
+    }
+  }
+
   async generateDialogue(req, res) {
     try {
       const { topic } = req.body;
@@ -84,7 +102,17 @@ class DialogueController {
   async generateTopics(req, res) {
     try {
       const count = parseInt(req.query.count) || 10;
-      const existingTopics = req.body?.existingTopics ?? [];
+      const topics = await dialogueTopicGeneratorService.generateTopics(count);
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, topics);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.QUERY_FAILED);
+    }
+  }
+
+  async generateUniqueTopics(req, res) {
+    try {
+      const count = parseInt(req.query.count) || 10;
+      const existingTopics = await dialogueService.getAllTopics();
       const topics = await dialogueTopicGeneratorService.generateTopics(count, existingTopics);
       handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, topics);
     } catch (error) {
