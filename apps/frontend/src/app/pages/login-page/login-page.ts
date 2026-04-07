@@ -28,15 +28,15 @@ export class LoginPage {
   get emailError(): string | null {
     const ctrl = this.form.get('email');
     if (!ctrl?.touched || ctrl.valid) return null;
-    if (ctrl.errors?.['required']) return 'Az e-mail cím megadása kötelező.';
-    if (ctrl.errors?.['email']) return 'Kérjük, érvényes e-mail címet adj meg.';
+    if (ctrl.errors?.['required']) return 'Email address is required.';
+    if (ctrl.errors?.['email']) return 'Please enter a valid email address.';
     return null;
   }
 
   get passwordError(): string | null {
     const ctrl = this.form.get('password');
     if (!ctrl?.touched || ctrl.valid) return null;
-    if (ctrl.errors?.['required']) return 'A jelszó megadása kötelező.';
+    if (ctrl.errors?.['required']) return 'Password is required.';
     return null;
   }
 
@@ -58,7 +58,7 @@ export class LoginPage {
       },
       error: (err) => {
         this.loading.set(false);
-        this.serverError.set(err?.error?.message ?? 'Hibás e-mail cím vagy jelszó. Kérjük, próbáld újra.');
+        this.serverError.set(err?.error?.message ?? 'Invalid email or password. Please try again.');
       },
     });
   }

@@ -1,59 +1,11 @@
-:host {
-  display: block;
-  min-height: 100vh;
-  font-family: Inter, Arial, sans-serif;
-}
-
 .app-shell {
-  min-height: 100vh;
-  background: #f7f8fb;
-  color: #18202c;
-}
-
-.app-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #dbe2ea;
-  background: #ffffff;
-}
-
-.app-header h1 {
-  margin: 0 0 0.75rem;
-  font-size: 1.3rem;
-}
-
-.app-nav {
+  min-height: 100dvh;
   display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  background: var(--color-bg);
 }
 
-.app-nav a {
-  color: #1d4ed8;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.app-nav a:hover {
-  text-decoration: underline;
-}
-
-.app-nav__logout {
-  background: none;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #64748b;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-
-  &:hover {
-    border-color: #ef4444;
-    color: #ef4444;
-  }
-}
-
-.app-content {
+.app-main {
+  flex: 1;
   padding: 1.5rem;
 }

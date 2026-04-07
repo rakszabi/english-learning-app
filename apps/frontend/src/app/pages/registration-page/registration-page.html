@@ -12,17 +12,17 @@
             <polyline points="20 6 9 17 4 12"/>
           </svg>
         </div>
-        <h2 class="reg__success-title">Majdnem kész!</h2>
+        <h2 class="reg__success-title">Almost there!</h2>
         <p class="reg__success-text">
-          Megerősítő e-mailt küldtünk a<br />
+          We sent a confirmation email to<br />
           <strong>{{ registeredEmail() }}</strong><br />
-          címre. Kattints a levélben lévő linkre a fiók aktiválásához.
+          Click the link in the email to activate your account.
         </p>
         <a routerLink="/login" class="reg__success-back">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
           </svg>
-          Vissza a bejelentkezéshez
+          Back to sign in
         </a>
       </div>
     }
@@ -32,10 +32,10 @@
       <div class="reg__card">
         <header class="reg__header">
           <div class="reg__logo">ELA</div>
-          <h1 class="reg__title">Hozz létre fiókot</h1>
+          <h1 class="reg__title">Create an account</h1>
           <p class="reg__subtitle">
-            Már van fiókod?
-            <a routerLink="/login" class="reg__inline-link">Jelentkezz be</a>
+            Already have an account?
+            <a routerLink="/login" class="reg__inline-link">Sign in</a>
           </p>
         </header>
 
@@ -59,15 +59,15 @@
           <div class="reg__name-row">
             <app-input
               formControlName="firstname"
-              label="Keresztnév"
-              placeholder="pl. Péter"
+              label="First name"
+              placeholder="e.g. John"
               autocomplete="given-name"
               [error]="firstnameError"
             />
             <app-input
               formControlName="lastname"
-              label="Vezetéknév"
-              placeholder="pl. Nagy"
+              label="Last name"
+              placeholder="e.g. Smith"
               autocomplete="family-name"
               [error]="lastnameError"
             />
@@ -75,27 +75,27 @@
 
           <app-input
             formControlName="email"
-            label="E-mail cím"
+            label="Email address"
             type="email"
-            placeholder="pelda@email.com"
+            placeholder="you@example.com"
             autocomplete="email"
             [error]="emailError"
           />
 
           <app-input
             formControlName="password"
-            label="Jelszó"
+            label="Password"
             type="password"
-            placeholder="Legalább 8 karakter"
+            placeholder="At least 8 characters"
             autocomplete="new-password"
             [error]="passwordError"
           />
 
           <app-input
             formControlName="confirmPassword"
-            label="Jelszó megerősítése"
+            label="Confirm password"
             type="password"
-            placeholder="Ismételd meg a jelszót"
+            placeholder="Repeat your password"
             autocomplete="new-password"
             [error]="confirmPasswordError"
           />
@@ -106,14 +106,14 @@
             [loading]="loading()"
             [fullWidth]="true"
           >
-            Regisztráció
+            Create account
           </app-button>
 
           <p class="reg__terms">
-            A regisztrációval elfogadod az
-            <a href="#" class="reg__inline-link">Általános Szerződési Feltételeket</a>
-            és az
-            <a href="#" class="reg__inline-link">Adatkezelési Tájékoztatót</a>.
+            By creating an account, you agree to the
+            <a href="#" class="reg__inline-link">Terms of Service</a>
+            and
+            <a href="#" class="reg__inline-link">Privacy Policy</a>.
           </p>
         </form>
       </div>

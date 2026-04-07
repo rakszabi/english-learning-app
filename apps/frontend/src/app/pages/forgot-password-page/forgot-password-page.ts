@@ -27,8 +27,8 @@ export class ForgotPasswordPage {
   get emailError(): string | null {
     const ctrl = this.form.get('email');
     if (!ctrl?.touched || ctrl.valid) return null;
-    if (ctrl.errors?.['required']) return 'Az e-mail cím megadása kötelező.';
-    if (ctrl.errors?.['email']) return 'Kérjük, érvényes e-mail címet adj meg.';
+    if (ctrl.errors?.['required']) return 'Email address is required.';
+    if (ctrl.errors?.['email']) return 'Please enter a valid email address.';
     return null;
   }
 
@@ -50,7 +50,7 @@ export class ForgotPasswordPage {
       },
       error: () => {
         this.loading.set(false);
-        // Szándékosan nem árulunk el, hogy az email létezik-e
+        // Intentionally don't reveal whether the email address is registered
         this.submitted.set(true);
       },
     });

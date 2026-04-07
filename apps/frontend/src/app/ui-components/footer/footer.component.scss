@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  background: #fff;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--color-primary-gradient);
+    border-radius: 5px;
+    font-size: 0.5625rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  &__name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    letter-spacing: -0.01em;
+  }
+
+  &__copy {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+}

@@ -12,10 +12,10 @@
       </div>
 
       <h1 class="login__brand-title">
-        Tanulj angolul,<br />a te tempódban.
+        Learn English,<br />at your own pace.
       </h1>
       <p class="login__brand-subtitle">
-        AI-alapú párbeszéd-gyakorlás, amely<br />alkalmazkodik a te szintedhez és céljaidhoz.
+        AI-powered conversation practice<br />that adapts to your level and goals.
       </p>
 
       <ul class="login__features">
@@ -25,7 +25,7 @@
               <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          Valós idejű AI visszajelzés
+          Real-time AI feedback
         </li>
         <li class="login__feature">
           <span class="login__feature-check">
@@ -33,7 +33,7 @@
               <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          Testreszabott tanulási útvonal
+          Personalized learning path
         </li>
         <li class="login__feature">
           <span class="login__feature-check">
@@ -41,7 +41,7 @@
               <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          Természetes párbeszéd-szimulációk
+          Natural conversation simulations
         </li>
       </ul>
     </div>
@@ -53,10 +53,10 @@
 
       <div class="login__form-header">
         <div class="login__mobile-logo">ELA</div>
-        <h2 class="login__title">Üdv újra!</h2>
+        <h2 class="login__title">Welcome back!</h2>
         <p class="login__desc">
-          Nincs még fiókod?
-          <a routerLink="/registration" class="login__inline-link">Regisztrálj ingyen</a>
+          Don't have an account?
+          <a routerLink="/registration" class="login__inline-link">Sign up for free</a>
         </p>
       </div>
 
@@ -80,9 +80,9 @@
         <div class="login__fields">
           <app-input
             formControlName="email"
-            label="E-mail cím"
+            label="Email address"
             type="email"
-            placeholder="pelda@email.com"
+            placeholder="you@example.com"
             autocomplete="email"
             [error]="emailError"
           />
@@ -90,15 +90,15 @@
           <div class="login__password-group">
             <app-input
               formControlName="password"
-              label="Jelszó"
+              label="Password"
               type="password"
-              placeholder="Legalább 8 karakter"
+              placeholder="Your password"
               autocomplete="current-password"
               [error]="passwordError"
             />
             <div class="login__forgot-row">
               <a routerLink="/forgot-password" class="login__forgot-link">
-                Elfelejtetted a jelszavadat?
+                Forgot your password?
               </a>
             </div>
           </div>
@@ -110,7 +110,7 @@
           [loading]="loading()"
           [fullWidth]="true"
         >
-          Bejelentkezés
+          Sign in
         </app-button>
       </form>
 

@@ -56,32 +56,32 @@ export class RegistrationPage {
   }
 
   get firstnameError(): string | null {
-    return this.fieldError('firstname', { required: 'A keresztnév megadása kötelező.' });
+    return this.fieldError('firstname', { required: 'First name is required.' });
   }
 
   get lastnameError(): string | null {
-    return this.fieldError('lastname', { required: 'A vezetéknév megadása kötelező.' });
+    return this.fieldError('lastname', { required: 'Last name is required.' });
   }
 
   get emailError(): string | null {
     return this.fieldError('email', {
-      required: 'Az e-mail cím megadása kötelező.',
-      email: 'Kérjük, érvényes e-mail címet adj meg.',
+      required: 'Email address is required.',
+      email: 'Please enter a valid email address.',
     });
   }
 
   get passwordError(): string | null {
     return this.fieldError('password', {
-      required: 'A jelszó megadása kötelező.',
-      minlength: 'A jelszónak legalább 8 karakter hosszúnak kell lennie.',
+      required: 'Password is required.',
+      minlength: 'Password must be at least 8 characters.',
     });
   }
 
   get confirmPasswordError(): string | null {
     const ctrl = this.form.get('confirmPassword');
     if (!ctrl?.touched) return null;
-    if (ctrl.errors?.['required']) return 'A jelszó megerősítése kötelező.';
-    if (this.form.errors?.['passwordMismatch']) return 'A két jelszó nem egyezik meg.';
+    if (ctrl.errors?.['required']) return 'Please confirm your password.';
+    if (this.form.errors?.['passwordMismatch']) return 'Passwords do not match.';
     return null;
   }
 
@@ -103,7 +103,7 @@ export class RegistrationPage {
       },
       error: (err) => {
         this.loading.set(false);
-        this.serverError.set(err?.error?.message ?? 'Valami hiba történt. Kérjük, próbáld újra.');
+        this.serverError.set(err?.error?.message ?? 'Something went wrong. Please try again.');
       },
     });
   }
