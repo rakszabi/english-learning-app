@@ -1,17 +1,12 @@
 $mobile: 640px;
 
 .pp {
-  max-width: 640px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+  padding: var(--page-padding-top) var(--page-padding-x) var(--page-padding-bottom);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-
-  @media (max-width: $mobile) {
-    padding: 0;
-    gap: 0;
-  }
 
   // ── Hero ───────────────────────────────────────────────────────────────────
   &__hero {
@@ -28,10 +23,6 @@ $mobile: 640px;
     @media (max-width: $mobile) {
       padding: 1.25rem;
       gap: 1rem;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      margin-bottom: 0;
     }
 
     &--skeleton {
@@ -102,11 +93,6 @@ $mobile: 640px;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
 
-    @media (max-width: $mobile) {
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-    }
   }
 
   &__card-header {

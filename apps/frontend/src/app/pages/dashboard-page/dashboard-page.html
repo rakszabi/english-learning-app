@@ -1,4 +1,90 @@
-<section>
-  <h2>Dashboard Page</h2>
-  <p>Ide kerul majd a fo dashboard nezet.</p>
-</section>
+<div class="dash">
+
+  <div class="dash__header">
+    <div>
+      <h1 class="dash__title">Dashboard</h1>
+      <p class="dash__subtitle">Your learning activity at a glance</p>
+    </div>
+  </div>
+
+  <!-- ── Loading ────────────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="dash__loading">
+      <div class="dash__spinner"></div>
+      <span>Loading your stats…</span>
+    </div>
+  }
+
+  <!-- ── Error ──────────────────────────────────────────────────────────────── -->
+  @if (error()) {
+    <div class="dash__error">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Could not load stats. Check your connection and try again.
+    </div>
+  }
+
+  <!-- ── Content ────────────────────────────────────────────────────────────── -->
+  @if (!loading() && !error()) {
+
+    <!-- Stat cards -->
+    <div class="dash__cards">
+      @for (card of cards(); track card.label) {
+        <div class="dash__card dash__card--{{ card.accent }}">
+          <span class="dash__card-value">{{ card.value }}</span>
+          <div class="dash__card-meta">
+            <span class="dash__card-label">{{ card.label }}</span>
+            @if (card.sub) {
+              <span class="dash__card-sub">{{ card.sub }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Chart section -->
+    <div class="dash__chart-card">
+      <div class="dash__chart-top">
+        <h2 class="dash__chart-title">Daily activity</h2>
+        <div class="dash__range-pills">
+          @for (opt of [7, 14, 30]; track opt) {
+            <button
+              class="dash__pill"
+              [class.dash__pill--active]="selectedDays() === opt"
+              type="button"
+              (click)="setDays(opt)"
+            >{{ opt }}d</button>
+          }
+        </div>
+      </div>
+
+      @if (filtered().every(d => d.newCount + d.reviewCount === 0)) {
+        <div class="dash__empty-chart">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/>
+          </svg>
+          <p>No activity in this period yet — start practicing!</p>
+        </div>
+      } @else {
+        <apx-chart
+          [series]="chartOptions().series!"
+          [chart]="chartOptions().chart!"
+          [plotOptions]="chartOptions().plotOptions!"
+          [colors]="chartOptions().colors!"
+          [dataLabels]="chartOptions().dataLabels!"
+          [stroke]="chartOptions().stroke!"
+          [grid]="chartOptions().grid!"
+          [xaxis]="chartOptions().xaxis!"
+          [yaxis]="chartOptions().yaxis!"
+          [tooltip]="chartOptions().tooltip!"
+          [legend]="chartOptions().legend!"
+          [fill]="chartOptions().fill!"
+          [states]="chartOptions().states!"
+        />
+      }
+    </div>
+
+  }
+
+</div>

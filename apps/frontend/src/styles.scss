@@ -5,6 +5,20 @@
 }
 
 :root {
+  // ── Page container ───────────────────────────────────────────────────────────
+  --page-max-width: 1200px;
+  --page-padding-x: 1.5rem;
+  --page-padding-top: 2rem;
+  --page-padding-bottom: 4rem;
+
+  // ── Page title (the primary h1 on each content page) ─────────────────────────
+  --page-title-size: 1.75rem;
+  --page-title-size-mobile: 1.375rem;
+  --page-title-weight: 700;
+  --page-title-tracking: -0.03em;
+  --page-title-line-height: 1.2;
+
+  // ── Design tokens ────────────────────────────────────────────────────────────
   --color-primary: #4f46e5;
   --color-primary-dark: #4338ca;
   --color-primary-light: #818cf8;
@@ -49,6 +63,14 @@ body {
 button, input, textarea, select {
   font-family: inherit;
   font-size: inherit;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-padding-x: 1rem;
+    --page-padding-top: 1.5rem;
+    --page-padding-bottom: 3rem;
+  }
 }
 
 a {

@@ -1,13 +1,9 @@
 $mobile: 640px;
 
 .prp {
-  max-width: 780px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
-
-  @media (max-width: $mobile) {
-    padding: 1.5rem 1rem 3rem;
-  }
+  padding: var(--page-padding-top) var(--page-padding-x) var(--page-padding-bottom);
 
   // ── Intro ───────────────────────────────────────────────────────────────────
   &__intro {
@@ -29,14 +25,15 @@ $mobile: 640px;
   }
 
   &__intro-title {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: var(--page-title-size);
+    font-weight: var(--page-title-weight);
     color: var(--color-text-primary);
-    letter-spacing: -0.03em;
+    letter-spacing: var(--page-title-tracking);
+    line-height: var(--page-title-line-height);
     margin-bottom: 0.875rem;
 
     @media (max-width: $mobile) {
-      font-size: 1.375rem;
+      font-size: var(--page-title-size-mobile);
     }
   }
 

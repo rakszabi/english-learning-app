@@ -1,6 +1,9 @@
+$mobile: 640px;
+
 .dl {
-  max-width: 1100px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
+  padding: var(--page-padding-top) var(--page-padding-x) var(--page-padding-bottom);
 
   // ── Page header ──────────────────────────────────────────
   &__header {
@@ -8,11 +11,15 @@
   }
 
   &__title {
-    font-size: 1.625rem;
-    font-weight: 800;
+    font-size: var(--page-title-size);
+    font-weight: var(--page-title-weight);
     color: var(--color-text-primary);
-    letter-spacing: -0.03em;
-    line-height: 1.2;
+    letter-spacing: var(--page-title-tracking);
+    line-height: var(--page-title-line-height);
+
+    @media (max-width: $mobile) {
+      font-size: var(--page-title-size-mobile);
+    }
   }
 
   &__subtitle {
