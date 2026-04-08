@@ -10,10 +10,43 @@ class DialoguePracticeService {
     return await this.getPracticeById(practice.id);
   }
 
+  /**
+   * Returns the latest practice per dialogue for a user, enriched with
+   * `totalPracticeCount` across all sessions for that dialogue.
+   */
   async getPracticesByUser(userId) {
+    const all = await DialoguePractice.findAll({
+      where: { userId },
+      // learningDate csak dátum, ezért másodlagos kulcsként id DESC kell,
+      // hogy azonos napon belül is a legutóbb létrehozott kerüljön elsőre
+      order: [["learningDate", "DESC"], ["id", "DESC"]],
+      include: [{ model: Dialogue, as: "dialogue" }],
+    });
+
+    // Deduplikálás: dialógusonként csak a legutóbbi practice marad meg,
+    // de a teljes ismétlésszámot beleírjuk
+    const byDialogue = new Map();
+    for (const practice of all) {
+      const dId = practice.dialogueId;
+      if (!byDialogue.has(dId)) {
+        byDialogue.set(dId, { latest: practice, count: 0 });
+      }
+      byDialogue.get(dId).count++;
+    }
+
+    return Array.from(byDialogue.values()).map(({ latest, count }) => ({
+      ...latest.toJSON(),
+      totalPracticeCount: count,
+    }));
+  }
+
+  /**
+   * Returns the raw, unfiltered practice history for a user (all sessions).
+   */
+  async getPracticeHistoryByUser(userId) {
     return await DialoguePractice.findAll({
       where: { userId },
-      order: [["learningDate", "DESC"]],
+      order: [["learningDate", "DESC"], ["id", "DESC"]],
       include: [{ model: Dialogue, as: "dialogue" }],
     });
   }
@@ -45,48 +78,72 @@ class DialoguePracticeService {
   }
 
   async getNextPracticeDialogue(userId) {
-    const SCORE_WEIGHTS = { HARD: 3, MEDIUM: 2, EASY: 1 };
+    // ── Scoring configuration ─────────────────────────────────────────────
+    // Weights must sum to 1.0
+    const WEIGHTS = {
+      recency:    0.40, // Mennyi ideje volt legutóbb gyakorolva (régebben = jobb)
+      difficulty: 0.35, // Legutóbbi practice nehézsége (HARD = jobb)
+      frequency:  0.15, // Hányszor volt összesen gyakorolva (kevesebbet = jobb)
+      random:     0.10, // Kis véletlenszerűség, hogy ne legyen determinisztikus
+    };
+
+    // Ennél régebbi legutóbbi practice = maximális recency pont (nem nő tovább)
+    const MAX_RECENCY_DAYS = 30;
+
+    const DIFFICULTY_SCORE = { HARD: 1.0, MEDIUM: 0.6, EASY: 0.2 };
+    // ─────────────────────────────────────────────────────────────────────
 
     const allPractices = await DialoguePractice.findAll({
       where: { userId },
       include: [{ model: Dialogue, as: "dialogue" }],
-      order: [["learningDate", "DESC"]],
+      // learningDate csak dátum → azonos napon belül id DESC adja a valódi sorrendet
+      order: [["learningDate", "DESC"], ["id", "DESC"]],
     });
 
     if (allPractices.length === 0) return null;
 
-    // Legutóbbi gyakorlás dialogusonként
-    const latestPerDialogue = new Map();
+    // Csoportosítás dialogueId szerint; a fenti rendezés garantálja,
+    // hogy az első előfordulás mindig a ténylegesen legutóbbi practice
+    const byDialogue = new Map();
     for (const practice of allPractices) {
-      if (!latestPerDialogue.has(practice.dialogueId)) {
-        latestPerDialogue.set(practice.dialogueId, practice);
+      const dId = practice.dialogueId;
+      if (!byDialogue.has(dId)) {
+        byDialogue.set(dId, { dialogue: practice.dialogue, latest: practice, count: 0 });
       }
+      byDialogue.get(dId).count++;
     }
 
-    const candidates = Array.from(latestPerDialogue.values());
+    // Raw értékek kiszámítása
+    // createdAt-et használjuk a recency-hez, mert a learningDate csak dátum,
+    // így azonos napon belül is pontos az eltelt idő
+    const now = new Date();
+    const candidates = Array.from(byDialogue.values()).map(({ dialogue, latest, count }) => {
+      const ms = now - new Date(latest.createdAt);
+      const daysSince = Math.max(0, ms / 86_400_000); // törtrész is számít
+      return {
+        dialogue,
+        daysSince,
+        difficultyRaw: DIFFICULTY_SCORE[latest.score] ?? 0.5,
+        practiceCount: count,
+      };
+    });
 
-    // Legalább 1 napja gyakorolt dialógusok
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(23, 59, 59, 999);
+    // Frequency normalizálásához kell a max count a poolban
+    const maxCount = Math.max(...candidates.map((c) => c.practiceCount));
 
-    const overdue = candidates.filter(
-      (p) => new Date(p.learningDate) <= yesterday
-    );
+    // Végső score kiszámítása minden jelöltnek
+    const scored = candidates.map((c) => ({
+      dialogue: c.dialogue,
+      score:
+        WEIGHTS.recency    * Math.min(c.daysSince / MAX_RECENCY_DAYS, 1) +
+        WEIGHTS.difficulty * c.difficultyRaw +
+        WEIGHTS.frequency  * (1 - (c.practiceCount - 1) / maxCount) +
+        WEIGHTS.random     * Math.random(),
+    }));
 
-    const pool = overdue.length > 0 ? overdue : candidates;
-
-    // Súlyozott random pick
-    const weighted = [];
-    for (const practice of pool) {
-      const weight = SCORE_WEIGHTS[practice.score] ?? 1;
-      for (let i = 0; i < weight; i++) {
-        weighted.push(practice);
-      }
-    }
-
-    const selected = weighted[Math.floor(Math.random() * weighted.length)];
-    return selected.dialogue;
+    // Legmagasabb score-ú dialógus visszaadása
+    scored.sort((a, b) => b.score - a.score);
+    return scored[0].dialogue;
   }
 
   async queryPractices({ pagination, sort, search, filters }) {

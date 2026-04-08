@@ -174,6 +174,91 @@ $mobile: 640px;
     margin-bottom: 0.75rem;
   }
 
+  // ── Rated (post-scoring card) ───────────────────────────────────────────────
+  &__rated {
+    max-width: 480px;
+    margin: 2rem auto 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__rated-icon {
+    width: 72px;
+    height: 72px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-xl);
+    color: var(--color-success);
+    margin-bottom: 0.25rem;
+  }
+
+  &__rated-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  &__rated-topic {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    max-width: 360px;
+  }
+
+  &__rated-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 99px;
+    border: 1px solid;
+
+    &[data-score='EASY'] {
+      color: #065f46;
+      background: #d1fae5;
+      border-color: #6ee7b7;
+    }
+    &[data-score='MEDIUM'] {
+      color: #92400e;
+      background: #fef3c7;
+      border-color: #fcd34d;
+    }
+    &[data-score='HARD'] {
+      color: #7f1d1d;
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+  }
+
+  &__rated-score-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  &__rated-count {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  &__rated-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   // ── Session (dialogue display) ──────────────────────────────────────────────
   &__session {
     display: flex;

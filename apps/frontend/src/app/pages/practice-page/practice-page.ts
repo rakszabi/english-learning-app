@@ -3,7 +3,12 @@ import { DialogueService, DialogueDetail } from '../../core/services/dialogue.se
 import { DifficultyModalComponent, DifficultyScore } from '../../ui-components/difficulty-modal/difficulty-modal.component';
 import { DialogueLinesComponent } from '../../ui-components/dialogue-lines/dialogue-lines.component';
 
-type PageState = 'intro' | 'loading' | 'practicing' | 'no_more';
+type PageState = 'intro' | 'loading' | 'practicing' | 'rated' | 'no_more';
+
+interface RatedSummary {
+  topic: string;
+  score: DifficultyScore;
+}
 
 @Component({
   selector: 'app-practice-page',
@@ -18,11 +23,18 @@ export class PracticePage {
   protected readonly dialogue = signal<DialogueDetail | null>(null);
   protected readonly showTranslations = signal(true);
   protected readonly sessionCount = signal(0);
+  protected readonly lastRated = signal<RatedSummary | null>(null);
 
   // Modal state
   protected readonly isModalOpen = signal(false);
   protected readonly submitting = signal(false);
   protected readonly submitError = signal<string | null>(null);
+
+  protected readonly SCORE_LABEL: Record<DifficultyScore, string> = {
+    EASY: 'Easy',
+    MEDIUM: 'Medium',
+    HARD: 'Hard',
+  };
 
   protected start(): void {
     this.loadNext();
@@ -54,13 +66,22 @@ export class PracticePage {
         this.submitting.set(false);
         this.isModalOpen.set(false);
         this.sessionCount.update((n) => n + 1);
-        this.loadNext();
+        this.lastRated.set({ topic: d.topic, score });
+        this.state.set('rated');
       },
       error: (err) => {
         this.submitting.set(false);
         this.submitError.set(err?.error?.message ?? 'Something went wrong. Please try again.');
       },
     });
+  }
+
+  protected nextDialogue(): void {
+    this.loadNext();
+  }
+
+  protected finishSession(): void {
+    this.state.set('no_more');
   }
 
   private loadNext(): void {
@@ -75,13 +96,8 @@ export class PracticePage {
         this.dialogue.set(d);
         this.state.set('practicing');
       },
-      error: (err) => {
-        if (err?.status === 404) {
-          this.state.set('no_more');
-        } else {
-          // Treat unexpected errors as no_more to avoid blank state
-          this.state.set('no_more');
-        }
+      error: () => {
+        this.state.set('no_more');
       },
     });
   }

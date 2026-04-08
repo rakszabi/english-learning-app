@@ -46,6 +46,37 @@
     </div>
   }
 
+  <!-- ── Rated ─────────────────────────────────────────────────────────────── -->
+  @if (state() === 'rated' && lastRated(); as r) {
+    <div class="prp__rated">
+      <div class="prp__rated-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2 class="prp__rated-title">Dialogue completed</h2>
+      <p class="prp__rated-topic">{{ r.topic }}</p>
+      <div class="prp__rated-score" [attr.data-score]="r.score">
+        <span class="prp__rated-score-dot"></span>
+        Rated: {{ SCORE_LABEL[r.score] }}
+      </div>
+      @if (sessionCount() > 1) {
+        <p class="prp__rated-count">{{ sessionCount() }} completed this session</p>
+      }
+      <div class="prp__rated-actions">
+        <button class="prp__start-btn" type="button" (click)="nextDialogue()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Next dialogue
+        </button>
+        <button class="prp__start-btn prp__start-btn--secondary" type="button" (click)="finishSession()">
+          Finish session
+        </button>
+      </div>
+    </div>
+  }
+
   <!-- ── No more ────────────────────────────────────────────────────────────── -->
   @if (state() === 'no_more') {
     <div class="prp__empty">
