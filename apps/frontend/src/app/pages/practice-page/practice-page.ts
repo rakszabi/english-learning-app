@@ -1,52 +1,31 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
 import { DialogueService, DialogueDetail } from '../../core/services/dialogue.service';
-import { ButtonComponent } from '../../ui-components/button/button.component';
 import { DifficultyModalComponent, DifficultyScore } from '../../ui-components/difficulty-modal/difficulty-modal.component';
 import { DialogueLinesComponent } from '../../ui-components/dialogue-lines/dialogue-lines.component';
 
+type PageState = 'intro' | 'loading' | 'practicing' | 'no_more';
+
 @Component({
-  selector: 'app-dialogue-page',
-  imports: [RouterLink, DatePipe, ButtonComponent, DifficultyModalComponent, DialogueLinesComponent],
-  templateUrl: './dialogue-page.html',
-  styleUrl: './dialogue-page.scss',
+  selector: 'app-practice-page',
+  imports: [DifficultyModalComponent, DialogueLinesComponent],
+  templateUrl: './practice-page.html',
+  styleUrl: './practice-page.scss',
 })
-export class DialoguePage implements OnInit {
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+export class PracticePage {
   private readonly dialogueService = inject(DialogueService);
 
+  protected readonly state = signal<PageState>('intro');
   protected readonly dialogue = signal<DialogueDetail | null>(null);
-  protected readonly loading = signal(true);
-  protected readonly error = signal<string | null>(null);
   protected readonly showTranslations = signal(true);
+  protected readonly sessionCount = signal(0);
 
+  // Modal state
   protected readonly isModalOpen = signal(false);
   protected readonly submitting = signal(false);
   protected readonly submitError = signal<string | null>(null);
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.error.set('Dialogue not found.');
-      this.loading.set(false);
-      return;
-    }
-
-    this.dialogueService.getById(id).subscribe({
-      next: (d) => {
-        if (typeof d.dialogJson === 'string') {
-          d.dialogJson = JSON.parse(d.dialogJson);
-        }
-        this.dialogue.set(d);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Failed to load dialogue. Please try again.');
-        this.loading.set(false);
-      },
-    });
+  protected start(): void {
+    this.loadNext();
   }
 
   protected toggleTranslations(): void {
@@ -74,11 +53,35 @@ export class DialoguePage implements OnInit {
       next: () => {
         this.submitting.set(false);
         this.isModalOpen.set(false);
-        this.router.navigate(['/dialogues']);
+        this.sessionCount.update((n) => n + 1);
+        this.loadNext();
       },
       error: (err) => {
         this.submitting.set(false);
         this.submitError.set(err?.error?.message ?? 'Something went wrong. Please try again.');
+      },
+    });
+  }
+
+  private loadNext(): void {
+    this.state.set('loading');
+    this.showTranslations.set(true);
+
+    this.dialogueService.getNextForPractice().subscribe({
+      next: (d) => {
+        if (typeof d.dialogJson === 'string') {
+          d.dialogJson = JSON.parse(d.dialogJson as unknown as string);
+        }
+        this.dialogue.set(d);
+        this.state.set('practicing');
+      },
+      error: (err) => {
+        if (err?.status === 404) {
+          this.state.set('no_more');
+        } else {
+          // Treat unexpected errors as no_more to avoid blank state
+          this.state.set('no_more');
+        }
       },
     });
   }

@@ -110,93 +110,6 @@ $mobile: 640px;
     }
   }
 
-  // ── Chat lines ─────────────────────────────────────────────────────────────
-  &__lines {
-    display: flex;
-    flex-direction: column;
-    gap: 1.125rem;
-
-    @media (max-width: $mobile) {
-      gap: 0.875rem;
-    }
-  }
-
-  &__line {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    max-width: 78%;
-
-    @media (max-width: $mobile) {
-      max-width: 92%;
-    }
-
-    &--b {
-      align-self: flex-end;
-      align-items: flex-end;
-    }
-  }
-
-  &__bubble {
-    padding: 0.875rem 1.125rem;
-    border-radius: var(--radius-lg);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
-    overflow-wrap: break-word;
-    word-break: break-word;
-    min-width: 0;
-
-    @media (max-width: $mobile) {
-      padding: 0.75rem 0.9375rem;
-      border-radius: var(--radius-md);
-    }
-
-    .dp__line--b & {
-      background: rgba(79, 70, 229, 0.05);
-      border-color: rgba(79, 70, 229, 0.18);
-    }
-  }
-
-  &__en {
-    font-size: 0.9375rem;
-    color: var(--color-text-primary);
-    line-height: 1.6;
-    transition: filter 0.2s ease;
-
-    @media (max-width: $mobile) {
-      font-size: 0.875rem;
-    }
-
-    &--blurred {
-      filter: blur(5px);
-      cursor: pointer;
-      user-select: none;
-
-      &:hover {
-        filter: blur(3px);
-      }
-    }
-  }
-
-  &__hu {
-    font-size: 0.8125rem;
-    color: var(--color-text-secondary);
-    line-height: 1.55;
-    font-style: italic;
-    margin-top: 0.4rem;
-    padding-top: 0.4rem;
-    border-top: 1px solid var(--color-border);
-
-    @media (max-width: $mobile) {
-      font-size: 0.75rem;
-    }
-
-    .dp__line--b & {
-      border-top-color: rgba(79, 70, 229, 0.12);
-    }
-  }
-
   // ── Finish button ──────────────────────────────────────────────────────────
   &__finish-row {
     display: flex;
@@ -257,192 +170,27 @@ $mobile: 640px;
       border-radius: var(--radius-lg);
       width: 320px;
       max-width: 100%;
-
-      .dp__line--b & { width: 380px; }
-    }
-  }
-}
-
-// ── Difficulty modal ───────────────────────────────────────────────────────────
-.dp-modal {
-  &__overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(3px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
-    animation: dp-fade-in 0.18s ease;
-  }
-
-  @keyframes dp-fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  & {
-    background: var(--color-surface);
-    border-radius: var(--radius-xl);
-    padding: 2rem;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
-    animation: dp-slide-up 0.2s ease;
-
-    @media (max-width: 480px) {
-      padding: 1.5rem;
-      border-radius: var(--radius-lg);
     }
   }
 
-  @keyframes dp-slide-up {
-    from { transform: translateY(12px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-  }
-
-  &__title {
-    font-size: 1.1875rem;
-    font-weight: 700;
-    color: var(--color-text-primary);
-    letter-spacing: -0.02em;
-    margin-bottom: 0.3rem;
-  }
-
-  &__subtitle {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 1.75rem;
-  }
-
-  &__options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.625rem;
-    margin-bottom: 1.5rem;
-  }
-
-  &__option {
+  &__lines-skel {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 0.5rem;
-    background: var(--color-bg);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    cursor: pointer;
-    transition: all 0.15s ease;
-
-    &:hover {
-      border-color: var(--color-text-muted);
-      background: var(--color-surface);
-    }
-
-    &--easy.dp-modal__option--selected {
-      border-color: #10b981;
-      background: rgba(16, 185, 129, 0.07);
-    }
-
-    &--medium.dp-modal__option--selected {
-      border-color: #f59e0b;
-      background: rgba(245, 158, 11, 0.07);
-    }
-
-    &--hard.dp-modal__option--selected {
-      border-color: #ef4444;
-      background: rgba(239, 68, 68, 0.07);
-    }
+    gap: 1.125rem;
   }
 
-  &__option-icon {
-    font-size: 1.625rem;
-    line-height: 1;
-  }
-
-  &__option-label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
-  &__error {
-    font-size: 0.8125rem;
-    color: var(--color-error);
-    background: var(--color-error-bg);
-    border-radius: var(--radius-sm);
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  &__actions {
+  // Skeleton line positioning (mirrors DialogueLinesComponent layout)
+  &__skel-line {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.625rem;
-  }
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 78%;
 
-  &__cancel {
-    padding: 0.5625rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    background: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all 0.15s ease;
+    &--b {
+      align-self: flex-end;
+      align-items: flex-end;
 
-    &:hover:not(:disabled) {
-      color: var(--color-text-primary);
-      border-color: var(--color-text-muted);
+      .dp__skeleton--bubble { width: 380px; }
     }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-
-  &__submit {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5625rem 1.125rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #fff;
-    background: var(--color-primary-gradient);
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
-
-    &:hover:not(:disabled) {
-      opacity: 0.9;
-    }
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-  }
-
-  &__spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: dp-spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes dp-spin {
-    to { transform: rotate(360deg); }
   }
 }

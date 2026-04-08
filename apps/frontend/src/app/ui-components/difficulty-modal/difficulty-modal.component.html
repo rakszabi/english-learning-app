@@ -1,0 +1,63 @@
+@if (isOpen()) {
+  <div class="dm__overlay" (click)="cancel()">
+    <div class="dm" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="dm-title">
+
+      <h2 class="dm__title" id="dm-title">How was this dialogue?</h2>
+      <p class="dm__subtitle">Rate the difficulty to track your progress.</p>
+
+      <div class="dm__options">
+        <button
+          class="dm__option dm__option--easy"
+          [class.dm__option--selected]="selectedScore() === 'EASY'"
+          type="button"
+          (click)="select('EASY')"
+        >
+          <span class="dm__option-icon">😊</span>
+          <span class="dm__option-label">Easy</span>
+        </button>
+        <button
+          class="dm__option dm__option--medium"
+          [class.dm__option--selected]="selectedScore() === 'MEDIUM'"
+          type="button"
+          (click)="select('MEDIUM')"
+        >
+          <span class="dm__option-icon">🤔</span>
+          <span class="dm__option-label">Medium</span>
+        </button>
+        <button
+          class="dm__option dm__option--hard"
+          [class.dm__option--selected]="selectedScore() === 'HARD'"
+          type="button"
+          (click)="select('HARD')"
+        >
+          <span class="dm__option-icon">😤</span>
+          <span class="dm__option-label">Hard</span>
+        </button>
+      </div>
+
+      @if (error()) {
+        <p class="dm__error">{{ error() }}</p>
+      }
+
+      <div class="dm__actions">
+        <button class="dm__cancel" type="button" (click)="cancel()" [disabled]="submitting()">
+          Cancel
+        </button>
+        <button
+          class="dm__submit"
+          type="button"
+          (click)="submit()"
+          [disabled]="!selectedScore() || submitting()"
+        >
+          @if (submitting()) {
+            <span class="dm__spinner"></span>
+            Saving…
+          } @else {
+            Save & Finish
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

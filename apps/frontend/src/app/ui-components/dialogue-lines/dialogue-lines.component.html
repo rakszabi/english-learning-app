@@ -1,0 +1,14 @@
+<div class="dl">
+  @for (line of lines(); track $index) {
+    <div class="dl__line" [class.dl__line--b]="line.speaker === 'B'">
+      <div class="dl__bubble">
+        <p
+          class="dl__en"
+          [class.dl__en--blurred]="!showTranslations()"
+          (click)="onLineClick()"
+        >{{ line.en }}</p>
+        <p class="dl__hu">{{ line.hu }}</p>
+      </div>
+    </div>
+  }
+</div>

@@ -3,6 +3,7 @@ import { DashboardPage } from './pages/dashboard-page/dashboard-page';
 import { DialogueListPage } from './pages/dialogue-list-page/dialogue-list-page';
 import { DialoguePage } from './pages/dialogue-page/dialogue-page';
 import { NewDialoguePage } from './pages/new-dialogue-page/new-dialogue-page';
+import { PracticePage } from './pages/practice-page/practice-page';
 import { ForgotPasswordPage } from './pages/forgot-password-page/forgot-password-page';
 import { LoginPage } from './pages/login-page/login-page';
 import { NotFoundPage } from './pages/not-found-page/not-found-page';
@@ -22,6 +23,7 @@ export const routes: Routes = [
   // Protected routes
   { path: 'dashboard', component: DashboardPage, canActivate: [authGuard] },
   { path: 'profile', component: ProfilePage, canActivate: [authGuard] },
+  { path: 'practice', component: PracticePage, canActivate: [authGuard] },
   { path: 'dialogues', component: DialogueListPage, canActivate: [authGuard] },
   // 'new' must come before ':id' so the router doesn't treat "new" as an ID
   { path: 'dialogues/new', component: NewDialoguePage, canActivate: [authGuard] },

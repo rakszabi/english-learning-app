@@ -13,9 +13,9 @@
       <div class="dp__skeleton dp__skeleton--title"></div>
       <div class="dp__skeleton dp__skeleton--meta"></div>
     </div>
-    <div class="dp__lines">
+    <div class="dp__lines-skel">
       @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-        <div class="dp__line" [class.dp__line--b]="i % 2 === 0">
+        <div class="dp__skel-line" [class.dp__skel-line--b]="i % 2 === 0">
           <div class="dp__skeleton dp__skeleton--bubble"></div>
         </div>
       }
@@ -59,16 +59,11 @@
       </button>
     </div>
 
-    <div class="dp__lines">
-      @for (line of d.dialogJson.lines; track $index) {
-        <div class="dp__line" [class.dp__line--b]="line.speaker === 'B'">
-          <div class="dp__bubble">
-            <p class="dp__en" [class.dp__en--blurred]="!showTranslations()" (click)="showTranslations() || toggleTranslations()">{{ line.en }}</p>
-            <p class="dp__hu">{{ line.hu }}</p>
-          </div>
-        </div>
-      }
-    </div>
+    <app-dialogue-lines
+      [lines]="d.dialogJson.lines"
+      [showTranslations]="showTranslations()"
+      (reveal)="showTranslations.set(true)"
+    />
 
     <div class="dp__finish-row">
       <app-button type="button" (click)="openModal()">
@@ -82,67 +77,10 @@
 
 </div>
 
-<!-- Difficulty modal -->
-@if (isModalOpen()) {
-  <div class="dp-modal__overlay" (click)="closeModal()">
-    <div class="dp-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-
-      <h2 class="dp-modal__title" id="modal-title">How was this dialogue?</h2>
-      <p class="dp-modal__subtitle">Rate the difficulty to track your progress.</p>
-
-      <div class="dp-modal__options">
-        <button
-          class="dp-modal__option dp-modal__option--easy"
-          [class.dp-modal__option--selected]="selectedScore() === 'EASY'"
-          type="button"
-          (click)="selectScore('EASY')"
-        >
-          <span class="dp-modal__option-icon">😊</span>
-          <span class="dp-modal__option-label">Easy</span>
-        </button>
-        <button
-          class="dp-modal__option dp-modal__option--medium"
-          [class.dp-modal__option--selected]="selectedScore() === 'MEDIUM'"
-          type="button"
-          (click)="selectScore('MEDIUM')"
-        >
-          <span class="dp-modal__option-icon">🤔</span>
-          <span class="dp-modal__option-label">Medium</span>
-        </button>
-        <button
-          class="dp-modal__option dp-modal__option--hard"
-          [class.dp-modal__option--selected]="selectedScore() === 'HARD'"
-          type="button"
-          (click)="selectScore('HARD')"
-        >
-          <span class="dp-modal__option-icon">😤</span>
-          <span class="dp-modal__option-label">Hard</span>
-        </button>
-      </div>
-
-      @if (submitError()) {
-        <p class="dp-modal__error">{{ submitError() }}</p>
-      }
-
-      <div class="dp-modal__actions">
-        <button class="dp-modal__cancel" type="button" (click)="closeModal()" [disabled]="submitting()">
-          Cancel
-        </button>
-        <button
-          class="dp-modal__submit"
-          type="button"
-          (click)="submitPractice()"
-          [disabled]="!selectedScore() || submitting()"
-        >
-          @if (submitting()) {
-            <span class="dp-modal__spinner"></span>
-            Saving…
-          } @else {
-            Save & Finish
-          }
-        </button>
-      </div>
-
-    </div>
-  </div>
-}
+<app-difficulty-modal
+  [isOpen]="isModalOpen()"
+  [submitting]="submitting()"
+  [error]="submitError()"
+  (scored)="onScored($event)"
+  (cancelled)="closeModal()"
+/>

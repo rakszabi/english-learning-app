@@ -58,6 +58,12 @@ export class DialogueService {
       .pipe(map((res) => res.data));
   }
 
+  getNextForPractice(): Observable<DialogueDetail> {
+    return this.http
+      .get<ApiResponse<DialogueDetail>>(`${environment.apiUrl}/api/dialogue-practice/review`)
+      .pipe(map((res) => res.data));
+  }
+
   submitPractice(dialogueId: number, score: 'EASY' | 'MEDIUM' | 'HARD'): Observable<unknown> {
     return this.http.post(`${environment.apiUrl}/api/dialogue-practice`, { dialogueId, score });
   }

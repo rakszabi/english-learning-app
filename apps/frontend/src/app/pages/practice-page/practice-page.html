@@ -1,0 +1,135 @@
+<div class="prp">
+
+  <!-- ── Intro ─────────────────────────────────────────────────────────────── -->
+  @if (state() === 'intro') {
+    <div class="prp__intro">
+      <div class="prp__intro-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      </div>
+      <h1 class="prp__intro-title">Practice Mode</h1>
+      <p class="prp__intro-desc">
+        Review dialogues you've already studied. Each session picks the most relevant
+        dialogue based on how long ago you practiced it and how difficult it was —
+        so the ones you found hardest come back more often.
+      </p>
+      <ul class="prp__intro-tips">
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Read the Hungarian and try to recall the English
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Use "Hide English" to test yourself
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Rate the difficulty honestly — it improves your review schedule
+        </li>
+      </ul>
+      <button class="prp__start-btn" type="button" (click)="start()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Start Practice
+      </button>
+    </div>
+  }
+
+  <!-- ── Loading ────────────────────────────────────────────────────────────── -->
+  @if (state() === 'loading') {
+    <div class="prp__loading">
+      <div class="prp__loading-spinner"></div>
+      <p>Finding your next dialogue…</p>
+    </div>
+  }
+
+  <!-- ── No more ────────────────────────────────────────────────────────────── -->
+  @if (state() === 'no_more') {
+    <div class="prp__empty">
+      <div class="prp__empty-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      @if (sessionCount() > 0) {
+        <h2 class="prp__empty-title">Great session!</h2>
+        <p class="prp__empty-desc">
+          You completed {{ sessionCount() }} {{ sessionCount() === 1 ? 'dialogue' : 'dialogues' }} this session.
+          No more dialogues are due for review right now — come back later.
+        </p>
+      } @else {
+        <h2 class="prp__empty-title">Nothing to review yet</h2>
+        <p class="prp__empty-desc">
+          Practice some dialogues first. Once you've completed at least one,
+          it will show up here for review.
+        </p>
+      }
+      <button class="prp__start-btn prp__start-btn--secondary" type="button" (click)="state.set('intro')">
+        Back to start
+      </button>
+    </div>
+  }
+
+  <!-- ── Practicing ─────────────────────────────────────────────────────────── -->
+  @if (state() === 'practicing' && dialogue(); as d) {
+    <div class="prp__session">
+
+      <div class="prp__session-header">
+        <div class="prp__session-left">
+          <h1 class="prp__session-title">{{ d.topic }}</h1>
+          <p class="prp__session-meta">{{ d.dialogJson.lines.length }} lines</p>
+        </div>
+        <button class="prp__toggle-btn" type="button" (click)="toggleTranslations()">
+          @if (showTranslations()) {
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+            Hide English
+          } @else {
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            Show English
+          }
+        </button>
+      </div>
+
+      @if (sessionCount() > 0) {
+        <div class="prp__session-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {{ sessionCount() }} completed this session
+        </div>
+      }
+
+      <app-dialogue-lines
+        [lines]="d.dialogJson.lines"
+        [showTranslations]="showTranslations()"
+        (reveal)="showTranslations.set(true)"
+      />
+
+      <div class="prp__finish-row">
+        <button class="prp__finish-btn" type="button" (click)="openModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Finish & rate
+        </button>
+      </div>
+
+    </div>
+  }
+
+</div>
+
+<app-difficulty-modal
+  [isOpen]="isModalOpen()"
+  [submitting]="submitting()"
+  [error]="submitError()"
+  (scored)="onScored($event)"
+  (cancelled)="closeModal()"
+/>
