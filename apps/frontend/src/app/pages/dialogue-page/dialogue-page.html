@@ -1,4 +1,148 @@
-<section>
-  <h2>Dialogue Page</h2>
-  <p>Ide kerul majd egy konkret parbeszed reszletes nezete.</p>
-</section>
+<div class="dp">
+
+  <a routerLink="/dialogues" class="dp__back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Back to Dialogues
+  </a>
+
+  <!-- Loading skeleton -->
+  @if (loading()) {
+    <div class="dp__header dp__header--skeleton">
+      <div class="dp__skeleton dp__skeleton--title"></div>
+      <div class="dp__skeleton dp__skeleton--meta"></div>
+    </div>
+    <div class="dp__lines">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="dp__line" [class.dp__line--b]="i % 2 === 0">
+          <div class="dp__skeleton dp__skeleton--bubble"></div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (!loading() && error()) {
+    <div class="dp__error">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <p>{{ error() }}</p>
+      <a routerLink="/dialogues" class="dp__error-link">Return to Dialogues</a>
+    </div>
+  }
+
+  <!-- Dialogue content -->
+  @if (!loading() && !error() && dialogue(); as d) {
+    <div class="dp__header">
+      <div class="dp__header-left">
+        <h1 class="dp__title">{{ d.topic }}</h1>
+        <p class="dp__meta">
+          {{ d.dialogJson.lines.length }} lines
+          &nbsp;·&nbsp;
+          Created {{ d.createdAt | date:'MMMM d, y' }}
+        </p>
+      </div>
+      <button class="dp__translation-toggle" type="button" (click)="toggleTranslations()">
+        @if (showTranslations()) {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+          Hide English
+        } @else {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          Show English
+        }
+      </button>
+    </div>
+
+    <div class="dp__lines">
+      @for (line of d.dialogJson.lines; track $index) {
+        <div class="dp__line" [class.dp__line--b]="line.speaker === 'B'">
+          <div class="dp__bubble">
+            <p class="dp__en" [class.dp__en--blurred]="!showTranslations()" (click)="showTranslations() || toggleTranslations()">{{ line.en }}</p>
+            <p class="dp__hu">{{ line.hu }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="dp__finish-row">
+      <app-button type="button" (click)="openModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Finish studying
+      </app-button>
+    </div>
+  }
+
+</div>
+
+<!-- Difficulty modal -->
+@if (isModalOpen()) {
+  <div class="dp-modal__overlay" (click)="closeModal()">
+    <div class="dp-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+      <h2 class="dp-modal__title" id="modal-title">How was this dialogue?</h2>
+      <p class="dp-modal__subtitle">Rate the difficulty to track your progress.</p>
+
+      <div class="dp-modal__options">
+        <button
+          class="dp-modal__option dp-modal__option--easy"
+          [class.dp-modal__option--selected]="selectedScore() === 'EASY'"
+          type="button"
+          (click)="selectScore('EASY')"
+        >
+          <span class="dp-modal__option-icon">😊</span>
+          <span class="dp-modal__option-label">Easy</span>
+        </button>
+        <button
+          class="dp-modal__option dp-modal__option--medium"
+          [class.dp-modal__option--selected]="selectedScore() === 'MEDIUM'"
+          type="button"
+          (click)="selectScore('MEDIUM')"
+        >
+          <span class="dp-modal__option-icon">🤔</span>
+          <span class="dp-modal__option-label">Medium</span>
+        </button>
+        <button
+          class="dp-modal__option dp-modal__option--hard"
+          [class.dp-modal__option--selected]="selectedScore() === 'HARD'"
+          type="button"
+          (click)="selectScore('HARD')"
+        >
+          <span class="dp-modal__option-icon">😤</span>
+          <span class="dp-modal__option-label">Hard</span>
+        </button>
+      </div>
+
+      @if (submitError()) {
+        <p class="dp-modal__error">{{ submitError() }}</p>
+      }
+
+      <div class="dp-modal__actions">
+        <button class="dp-modal__cancel" type="button" (click)="closeModal()" [disabled]="submitting()">
+          Cancel
+        </button>
+        <button
+          class="dp-modal__submit"
+          type="button"
+          (click)="submitPractice()"
+          [disabled]="!selectedScore() || submitting()"
+        >
+          @if (submitting()) {
+            <span class="dp-modal__spinner"></span>
+            Saving…
+          } @else {
+            Save & Finish
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

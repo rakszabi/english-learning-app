@@ -19,6 +19,22 @@ export interface PracticedDialogueItem {
   };
 }
 
+export interface DialogueLine {
+  speaker: 'A' | 'B';
+  en: string;
+  hu: string;
+}
+
+export interface DialogueDetail {
+  id: number;
+  topic: string;
+  createdAt: string;
+  dialogJson: {
+    topic: string;
+    lines: DialogueLine[];
+  };
+}
+
 interface ApiResponse<T> {
   status: string;
   message: string;
@@ -39,6 +55,16 @@ export class DialogueService {
   getPracticed(): Observable<PracticedDialogueItem[]> {
     return this.http
       .get<ApiResponse<PracticedDialogueItem[]>>(`${this.baseUrl}/practiced`)
+      .pipe(map((res) => res.data));
+  }
+
+  submitPractice(dialogueId: number, score: 'EASY' | 'MEDIUM' | 'HARD'): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/api/dialogue-practice`, { dialogueId, score });
+  }
+
+  getById(id: string | number): Observable<DialogueDetail> {
+    return this.http
+      .get<ApiResponse<DialogueDetail>>(`${this.baseUrl}/${id}`)
       .pipe(map((res) => res.data));
   }
 
