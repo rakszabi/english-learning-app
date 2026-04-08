@@ -11,6 +11,11 @@ export interface User {
   lastname?: string;
   role: string;
   status: string;
+  profileHeadline?: string;
+  avatarUrl?: string;
+  emailVerifiedAt?: string;
+  lastLoginAt?: string;
+  createdAt?: string;
 }
 
 export interface LoginResponse {
@@ -79,15 +84,38 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  getCurrentUserEmail(): string | null {
-    const token = this.getToken();
-    if (!token) return null;
+  private decodeJwtPayload(token: string): Record<string, string> | null {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.email ?? null;
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const json = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      );
+      return JSON.parse(json);
     } catch {
       return null;
     }
+  }
+
+  getCurrentUserEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    return this.decodeJwtPayload(token)?.['email'] ?? null;
+  }
+
+  getCurrentUserDisplayName(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    const payload = this.decodeJwtPayload(token);
+    if (!payload) return null;
+    const first = payload['firstname'] ?? '';
+    const last = payload['lastname'] ?? '';
+    const full = `${first} ${last}`.trim();
+    if (full) return full;
+    const prefix = (payload['email'] ?? '').split('@')[0];
+    return prefix ? prefix.charAt(0).toUpperCase() + prefix.slice(1) : null;
   }
 
   logout(): void {

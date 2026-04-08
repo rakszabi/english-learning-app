@@ -1,0 +1,290 @@
+$mobile: 640px;
+
+.pp {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @media (max-width: $mobile) {
+    padding: 0;
+    gap: 0;
+  }
+
+  // ── Hero ───────────────────────────────────────────────────────────────────
+  &__hero {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0.25rem;
+
+    @media (max-width: $mobile) {
+      padding: 1.25rem;
+      gap: 1rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      margin-bottom: 0;
+    }
+
+    &--skeleton {
+      gap: 1.25rem;
+    }
+  }
+
+  &__hero-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__hero-name {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: $mobile) {
+      font-size: 1.125rem;
+    }
+  }
+
+  &__hero-headline {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    flex-wrap: wrap;
+  }
+
+  // ── Toast ──────────────────────────────────────────────────────────────────
+  &__toast {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #065f46;
+    background: #d1fae5;
+    border: 1px solid #6ee7b7;
+    border-radius: var(--radius-md);
+
+    svg { flex-shrink: 0; }
+  }
+
+  // ── Cards ──────────────────────────────────────────────────────────────────
+  &__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+
+    @media (max-width: $mobile) {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+
+    @media (max-width: $mobile) {
+      padding: 1rem 1.25rem;
+    }
+  }
+
+  &__card-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  // ── Field list (view mode) ─────────────────────────────────────────────────
+  &__fields {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__field {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.9375rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: $mobile) {
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.875rem 1.25rem;
+    }
+  }
+
+  &__field-label {
+    flex-shrink: 0;
+    width: 140px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+
+    @media (max-width: $mobile) {
+      width: auto;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__field-value {
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    min-width: 0;
+    word-break: break-word;
+
+    &--muted {
+      color: var(--color-text-muted);
+      letter-spacing: 0.1em;
+    }
+  }
+
+  // ── Badges ─────────────────────────────────────────────────────────────────
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 99px;
+
+    &--verified {
+      color: #065f46;
+      background: #d1fae5;
+      border: 1px solid #6ee7b7;
+    }
+
+    &--role {
+      color: var(--color-primary);
+      background: rgba(79, 70, 229, 0.08);
+      border: 1px solid rgba(79, 70, 229, 0.2);
+      text-transform: capitalize;
+    }
+
+    &--status {
+      color: #065f46;
+      background: #d1fae5;
+      border: 1px solid #6ee7b7;
+      text-transform: capitalize;
+    }
+  }
+
+  // ── Edit form ──────────────────────────────────────────────────────────────
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1.25rem 1.5rem;
+
+    @media (max-width: $mobile) {
+      padding: 1rem 1.25rem;
+    }
+  }
+
+  &__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.875rem;
+
+    @media (max-width: $mobile) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin-top: 0.25rem;
+  }
+
+  &__error {
+    font-size: 0.8125rem;
+    color: var(--color-error);
+    background: var(--color-error-bg);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+  }
+
+  // ── Load error ─────────────────────────────────────────────────────────────
+  &__load-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+
+    svg { opacity: 0.35; }
+
+    p { font-size: 0.9375rem; max-width: 320px; }
+  }
+
+  // ── Skeleton shimmer ───────────────────────────────────────────────────────
+  @keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position: 600px 0; }
+  }
+
+  &__skeleton {
+    border-radius: var(--radius-md);
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+
+    &--avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    &--name   { height: 28px; width: 55%; margin-bottom: 0.5rem; }
+    &--meta   { height: 16px; width: 40%; }
+
+    &--card-title { height: 20px; width: 40%; margin: 1.25rem 1.5rem 1rem; }
+    &--field      { height: 18px; margin: 0 1.5rem 0.75rem; }
+    &--field-short { width: 50%; }
+  }
+}

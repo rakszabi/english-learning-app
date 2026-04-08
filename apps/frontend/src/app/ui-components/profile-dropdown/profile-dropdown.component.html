@@ -6,7 +6,8 @@
     aria-haspopup="true"
     type="button"
   >
-    <span class="pd__avatar">{{ userInitial() }}</span>
+    <app-avatar [name]="userDisplayName() || userEmail()" size="sm" />
+    <span class="pd__name">{{ userDisplayName() }}</span>
     <svg
       class="pd__chevron"
       [class.pd__chevron--open]="isOpen()"

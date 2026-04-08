@@ -1,0 +1,31 @@
+.av {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary-gradient);
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+  line-height: 1;
+
+  &--sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  &--md {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9375rem;
+  }
+
+  &--lg {
+    width: 72px;
+    height: 72px;
+    font-size: 1.875rem;
+    letter-spacing: -0.02em;
+  }
+}

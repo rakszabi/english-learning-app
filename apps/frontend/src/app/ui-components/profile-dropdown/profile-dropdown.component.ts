@@ -1,12 +1,12 @@
-import { Component, ElementRef, HostListener, inject, computed } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { signal } from '@angular/core';
+import { AvatarComponent } from '../avatar/avatar.component';
 
 @Component({
   selector: 'app-profile-dropdown',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AvatarComponent],
   templateUrl: './profile-dropdown.component.html',
   styleUrl: './profile-dropdown.component.scss',
 })
@@ -22,6 +22,7 @@ export class ProfileDropdownComponent {
   });
 
   protected readonly userEmail = computed(() => this.auth.getCurrentUserEmail() ?? '');
+  protected readonly userDisplayName = computed(() => this.auth.getCurrentUserDisplayName() ?? '');
 
   toggle(): void {
     this.isOpen.update((v) => !v);

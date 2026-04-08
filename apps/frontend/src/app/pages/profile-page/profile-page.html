@@ -1,4 +1,213 @@
-<section>
-  <h2>Profile Page</h2>
-  <p>Ide kerul majd a felhasznaloi profil kezelese.</p>
-</section>
+<div class="pp">
+
+  <!-- Loading skeleton -->
+  @if (loading()) {
+    <div class="pp__hero pp__hero--skeleton">
+      <div class="pp__skeleton pp__skeleton--avatar"></div>
+      <div class="pp__hero-info">
+        <div class="pp__skeleton pp__skeleton--name"></div>
+        <div class="pp__skeleton pp__skeleton--meta"></div>
+      </div>
+    </div>
+    @for (i of [1, 2, 3]; track i) {
+      <div class="pp__card">
+        <div class="pp__skeleton pp__skeleton--card-title"></div>
+        <div class="pp__skeleton pp__skeleton--field"></div>
+        <div class="pp__skeleton pp__skeleton--field pp__skeleton--field-short"></div>
+      </div>
+    }
+  }
+
+  <!-- Error -->
+  @if (!loading() && loadError()) {
+    <div class="pp__load-error">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <p>{{ loadError() }}</p>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!loading() && !loadError() && profile(); as p) {
+
+    <!-- Success toasts -->
+    @if (infoSuccess()) {
+      <div class="pp__toast">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Profile updated successfully.
+      </div>
+    }
+    @if (passwordSuccess()) {
+      <div class="pp__toast">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Password changed successfully.
+      </div>
+    }
+
+    <!-- Hero -->
+    <div class="pp__hero">
+      <app-avatar [name]="displayName()" size="lg" />
+      <div class="pp__hero-info">
+        <h1 class="pp__hero-name">{{ displayName() }}</h1>
+        @if (p.profileHeadline) {
+          <p class="pp__hero-headline">{{ p.profileHeadline }}</p>
+        }
+        <div class="pp__hero-meta">
+          <span>{{ p.email }}</span>
+          @if (p.emailVerifiedAt) {
+            <span class="pp__badge pp__badge--verified">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Verified
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Information card -->
+    <div class="pp__card">
+      <div class="pp__card-header">
+        <h2 class="pp__card-title">Personal Information</h2>
+        @if (!isEditingInfo()) {
+          <app-button variant="secondary" size="sm" type="button" (click)="startEditInfo()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit
+          </app-button>
+        }
+      </div>
+
+      @if (!isEditingInfo()) {
+        <div class="pp__fields">
+          <div class="pp__field">
+            <span class="pp__field-label">First name</span>
+            <span class="pp__field-value">{{ p.firstname || '—' }}</span>
+          </div>
+          <div class="pp__field">
+            <span class="pp__field-label">Last name</span>
+            <span class="pp__field-value">{{ p.lastname || '—' }}</span>
+          </div>
+          <div class="pp__field">
+            <span class="pp__field-label">Headline</span>
+            <span class="pp__field-value">{{ p.profileHeadline || '—' }}</span>
+          </div>
+        </div>
+      } @else {
+        <div class="pp__form">
+          <div class="pp__form-row">
+            <app-input label="First name" [(ngModel)]="editInfo.firstname" placeholder="Your first name" autocomplete="given-name" />
+            <app-input label="Last name" [(ngModel)]="editInfo.lastname" placeholder="Your last name" autocomplete="family-name" />
+          </div>
+          <app-input label="Headline" [(ngModel)]="editInfo.headline" placeholder="e.g. Software Engineer at Acme" />
+          @if (infoError()) {
+            <p class="pp__error">{{ infoError() }}</p>
+          }
+          <div class="pp__form-actions">
+            <app-button variant="ghost" size="sm" type="button" [disabled]="savingInfo()" (click)="cancelEditInfo()">Cancel</app-button>
+            <app-button size="sm" type="button" [loading]="savingInfo()" (click)="saveInfo()">Save changes</app-button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Security card -->
+    <div class="pp__card">
+      <div class="pp__card-header">
+        <h2 class="pp__card-title">Security</h2>
+        @if (!isChangingPassword()) {
+          <app-button variant="secondary" size="sm" type="button" (click)="startChangePassword()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Change password
+          </app-button>
+        }
+      </div>
+
+      @if (!isChangingPassword()) {
+        <div class="pp__fields">
+          <div class="pp__field">
+            <span class="pp__field-label">Password</span>
+            <span class="pp__field-value pp__field-value--muted">••••••••••••</span>
+          </div>
+        </div>
+      } @else {
+        <div class="pp__form">
+          <app-input
+            label="Current password"
+            type="password"
+            [(ngModel)]="passwordForm.old"
+            placeholder="Enter your current password"
+            autocomplete="current-password"
+          />
+          <app-input
+            label="New password"
+            type="password"
+            [(ngModel)]="passwordForm.new"
+            placeholder="At least 8 characters"
+            autocomplete="new-password"
+          />
+          <app-input
+            label="Confirm new password"
+            type="password"
+            [(ngModel)]="passwordForm.confirm"
+            placeholder="Repeat new password"
+            autocomplete="new-password"
+          />
+          @if (passwordError()) {
+            <p class="pp__error">{{ passwordError() }}</p>
+          }
+          <div class="pp__form-actions">
+            <app-button variant="ghost" size="sm" type="button" [disabled]="savingPassword()" (click)="cancelChangePassword()">Cancel</app-button>
+            <app-button size="sm" type="button" [loading]="savingPassword()" (click)="savePassword()">Save password</app-button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Account card (read-only) -->
+    <div class="pp__card">
+      <div class="pp__card-header">
+        <h2 class="pp__card-title">Account</h2>
+      </div>
+      <div class="pp__fields">
+        <div class="pp__field">
+          <span class="pp__field-label">Email address</span>
+          <span class="pp__field-value">{{ p.email }}</span>
+        </div>
+        <div class="pp__field">
+          <span class="pp__field-label">Role</span>
+          <span class="pp__badge pp__badge--role">{{ p.role }}</span>
+        </div>
+        <div class="pp__field">
+          <span class="pp__field-label">Account status</span>
+          <span class="pp__badge pp__badge--status">{{ p.status }}</span>
+        </div>
+        @if (p.createdAt) {
+          <div class="pp__field">
+            <span class="pp__field-label">Member since</span>
+            <span class="pp__field-value">{{ p.createdAt | date:'MMMM d, y' }}</span>
+          </div>
+        }
+        @if (p.lastLoginAt) {
+          <div class="pp__field">
+            <span class="pp__field-label">Last login</span>
+            <span class="pp__field-value">{{ p.lastLoginAt | date:'MMMM d, y · h:mm a' }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+  }
+
+</div>

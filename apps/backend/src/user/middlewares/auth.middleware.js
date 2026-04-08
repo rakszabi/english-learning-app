@@ -115,8 +115,8 @@ exports.userLogin = async (req, res, next) => {
     // Bejelentkezési idő frissítése
     await userService.updateLastLoginAt(user.email);
 
-    const token = generateAccessToken(user.id, user.email, user.role);
-    const refreshToken = generateRefreshToken(user.id, user.email, user.role);
+    const token = generateAccessToken(user.id, user.email, user.role, user.firstname, user.lastname);
+    const refreshToken = generateRefreshToken(user.id, user.email, user.role, user.firstname, user.lastname);
     req.token = token;
     req.refreshToken = refreshToken;
     req.user = user;
@@ -152,12 +152,16 @@ exports.tokenRefresh = async (req, res, next) => {
       const token = generateAccessToken(
         decoded.id,
         decoded.email,
-        decoded.role
+        decoded.role,
+        decoded.firstname,
+        decoded.lastname
       );
       const refreshToken = generateRefreshToken(
         decoded.id,
         decoded.email,
-        decoded.role
+        decoded.role,
+        decoded.firstname,
+        decoded.lastname
       );
 
       req.user = {
@@ -194,23 +198,19 @@ const emailPasswordValidation = async (email, password) => {
   }
 };
 
-function generateAccessToken(userId, email, role) {
+function generateAccessToken(userId, email, role, firstname, lastname) {
   return jwt.sign(
-    { id: userId, email: email, role: role },
+    { id: userId, email, role, firstname: firstname ?? null, lastname: lastname ?? null },
     process.env.SECRET_TOKEN,
-    {
-      expiresIn: TOKEN_EXPIRES_TIME,
-    }
+    { expiresIn: TOKEN_EXPIRES_TIME }
   );
 }
 
-function generateRefreshToken(userId, email, role) {
+function generateRefreshToken(userId, email, role, firstname, lastname) {
   return jwt.sign(
-    { id: userId, email: email, role: role },
+    { id: userId, email, role, firstname: firstname ?? null, lastname: lastname ?? null },
     process.env.SECRET_RTOKEN,
-    {
-      expiresIn: REFRESH_TOKEN_EXPIRES_TIME,
-    }
+    { expiresIn: REFRESH_TOKEN_EXPIRES_TIME }
   );
 }
 
