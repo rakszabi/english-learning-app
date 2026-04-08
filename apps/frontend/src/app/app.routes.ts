@@ -16,19 +16,20 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
 
   // Guest-only routes
-  { path: 'login', component: LoginPage, canActivate: [guestGuard] },
-  { path: 'registration', component: RegistrationPage, canActivate: [guestGuard] },
-  { path: 'forgot-password', component: ForgotPasswordPage, canActivate: [guestGuard] },
+  { path: 'login',           title: 'Sign in',        component: LoginPage,         canActivate: [guestGuard] },
+  { path: 'registration',    title: 'Create account', component: RegistrationPage,  canActivate: [guestGuard] },
+  { path: 'forgot-password', title: 'Reset password', component: ForgotPasswordPage, canActivate: [guestGuard] },
 
   // Protected routes
-  { path: 'dashboard', component: DashboardPage, canActivate: [authGuard] },
-  { path: 'profile', component: ProfilePage, canActivate: [authGuard] },
-  { path: 'practice', component: PracticePage, canActivate: [authGuard] },
-  { path: 'dialogues', component: DialogueListPage, canActivate: [authGuard] },
+  { path: 'dashboard',    title: 'Dashboard', component: DashboardPage,    canActivate: [authGuard] },
+  { path: 'profile',      title: 'Profile',   component: ProfilePage,      canActivate: [authGuard] },
+  { path: 'practice',     title: 'Practice',  component: PracticePage,     canActivate: [authGuard] },
+  { path: 'dialogues',    title: 'Dialogues', component: DialogueListPage, canActivate: [authGuard] },
   // 'new' must come before ':id' so the router doesn't treat "new" as an ID
-  { path: 'dialogues/new', component: NewDialoguePage, canActivate: [authGuard] },
+  { path: 'dialogues/new', title: 'New Dialogue', component: NewDialoguePage, canActivate: [authGuard] },
+  // Title is set dynamically in DialoguePage using the dialogue topic
   { path: 'dialogues/:id', component: DialoguePage, canActivate: [authGuard] },
 
-  { path: '404', component: NotFoundPage },
+  { path: '404', title: 'Page not found', component: NotFoundPage },
   { path: '**', redirectTo: '404' },
 ];

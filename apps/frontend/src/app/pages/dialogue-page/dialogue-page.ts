@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { DialogueService, DialogueDetail } from '../../core/services/dialogue.service';
 import { ButtonComponent } from '../../ui-components/button/button.component';
 import { DifficultyModalComponent, DifficultyScore } from '../../ui-components/difficulty-modal/difficulty-modal.component';
@@ -16,6 +17,7 @@ export class DialoguePage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialogueService = inject(DialogueService);
+  private readonly titleService = inject(Title);
 
   protected readonly dialogue = signal<DialogueDetail | null>(null);
   protected readonly loading = signal(true);
@@ -40,6 +42,7 @@ export class DialoguePage implements OnInit {
           d.dialogJson = JSON.parse(d.dialogJson);
         }
         this.dialogue.set(d);
+        this.titleService.setTitle(`${d.topic} · Lingu`);
         this.loading.set(false);
       },
       error: () => {
