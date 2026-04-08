@@ -9,6 +9,42 @@ $mobile: 640px;
     gap: 0.875rem;
   }
 
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.25rem;
+  }
+
+  &__speak-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+    &:hover {
+      color: var(--color-text-primary);
+      border-color: var(--color-text-secondary);
+    }
+
+    &--active {
+      color: #4f46e5;
+      border-color: rgba(79, 70, 229, 0.4);
+      background: rgba(79, 70, 229, 0.06);
+
+      &:hover {
+        background: rgba(79, 70, 229, 0.1);
+      }
+    }
+  }
+
   &__line {
     display: flex;
     flex-direction: column;
@@ -23,6 +59,13 @@ $mobile: 640px;
       align-self: flex-end;
       align-items: flex-end;
     }
+
+    &--active .dl__bubble {
+      border-color: rgba(79, 70, 229, 0.45);
+      background: rgba(79, 70, 229, 0.06);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
   }
 
   &__bubble {
@@ -34,6 +77,7 @@ $mobile: 640px;
     overflow-wrap: break-word;
     word-break: break-word;
     min-width: 0;
+    width: 100%;
 
     @media (max-width: $mobile) {
       padding: 0.75rem 0.9375rem;
@@ -46,11 +90,20 @@ $mobile: 640px;
     }
   }
 
+  &__en-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
   &__en {
+    flex: 1;
     font-size: 0.9375rem;
     color: var(--color-text-primary);
     line-height: 1.6;
     transition: filter 0.2s ease;
+    font-weight: 600;
+    margin: 0;
 
     @media (max-width: $mobile) {
       font-size: 0.875rem;
@@ -67,6 +120,33 @@ $mobile: 640px;
     }
   }
 
+  &__speak-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+    margin-top: 0.125rem;
+
+    &:hover {
+      color: var(--color-text-primary);
+      background: var(--color-border);
+    }
+
+    &--active {
+      color: #4f46e5;
+      background: rgba(79, 70, 229, 0.08);
+      border-color: rgba(79, 70, 229, 0.2);
+    }
+  }
+
   &__hu {
     font-size: 0.8125rem;
     color: var(--color-text-secondary);
@@ -75,6 +155,7 @@ $mobile: 640px;
     margin-top: 0.4rem;
     padding-top: 0.4rem;
     border-top: 1px solid var(--color-border);
+    margin-bottom: 0;
 
     @media (max-width: $mobile) {
       font-size: 0.75rem;

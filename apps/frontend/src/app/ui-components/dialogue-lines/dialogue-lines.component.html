@@ -1,12 +1,50 @@
 <div class="dl">
+
+  <div class="dl__toolbar">
+    <button
+      class="dl__speak-all"
+      [class.dl__speak-all--active]="tts.playingKey() === 'all'"
+      (click)="speakAll()"
+      type="button"
+      title="Felolvas mindent"
+    >
+      @if (tts.playingKey() === 'all') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        Leállítás
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        Felolvas mindent
+      }
+    </button>
+  </div>
+
   @for (line of lines(); track $index) {
-    <div class="dl__line" [class.dl__line--b]="line.speaker === 'B'">
+    <div
+      class="dl__line"
+      [class.dl__line--b]="line.speaker === 'B'"
+      [class.dl__line--active]="tts.currentLineIndex() === $index"
+    >
       <div class="dl__bubble">
-        <p
-          class="dl__en"
-          [class.dl__en--blurred]="!showTranslations()"
-          (click)="onLineClick()"
-        >{{ line.en }}</p>
+        <div class="dl__en-row">
+          <p
+            class="dl__en"
+            [class.dl__en--blurred]="!showTranslations()"
+            (click)="onLineClick()"
+          >{{ line.en }}</p>
+          <button
+            class="dl__speak-btn"
+            [class.dl__speak-btn--active]="tts.playingKey() === $index.toString()"
+            (click)="speakLine($index)"
+            type="button"
+            [title]="tts.playingKey() === $index.toString() ? 'Leállítás' : 'Felolvasás'"
+          >
+            @if (tts.playingKey() === $index.toString()) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            }
+          </button>
+        </div>
         <p class="dl__hu">{{ line.hu }}</p>
       </div>
     </div>

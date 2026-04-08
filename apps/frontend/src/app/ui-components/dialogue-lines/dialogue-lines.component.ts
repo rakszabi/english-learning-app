@@ -1,5 +1,6 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { DialogueLine } from '../../core/services/dialogue.service';
+import { TtsService } from '../../core/services/tts.service';
 
 @Component({
   selector: 'app-dialogue-lines',
@@ -8,6 +9,8 @@ import { DialogueLine } from '../../core/services/dialogue.service';
   styleUrl: './dialogue-lines.component.scss',
 })
 export class DialogueLinesComponent {
+  protected readonly tts = inject(TtsService);
+
   readonly lines = input<DialogueLine[]>([]);
   readonly showTranslations = input<boolean>(true);
 
@@ -18,5 +21,24 @@ export class DialogueLinesComponent {
     if (!this.showTranslations()) {
       this.reveal.emit();
     }
+  }
+
+  protected speakLine(index: number): void {
+    const line = this.lines()[index];
+    if (!line) return;
+    const key = String(index);
+    if (this.tts.playingKey() === key) {
+      this.tts.stop();
+    } else {
+      this.tts.speak(line.en, key);
+    }
+  }
+
+  protected speakAll(): void {
+    if (this.tts.playingKey() === 'all') {
+      this.tts.stop();
+      return;
+    }
+    this.tts.speakAll(this.lines().map((l) => l.en));
   }
 }
