@@ -56,6 +56,33 @@ class DialogueService {
     });
   }
 
+  async getPracticedByUser(userId) {
+    const practices = await DialoguePractice.findAll({
+      where: { userId },
+      include: [{ model: Dialogue, as: "dialogue", attributes: ["id", "topic", "createdAt"] }],
+      order: [["learningDate", "DESC"]],
+      attributes: ["score", "learningDate", "dialogueId"],
+    });
+
+    const seenIds = new Set();
+    const result = [];
+    for (const practice of practices) {
+      if (!seenIds.has(practice.dialogueId)) {
+        seenIds.add(practice.dialogueId);
+        result.push({
+          id: practice.dialogue.id,
+          topic: practice.dialogue.topic,
+          createdAt: practice.dialogue.createdAt,
+          latestPractice: {
+            score: practice.score,
+            learningDate: practice.learningDate,
+          },
+        });
+      }
+    }
+    return result;
+  }
+
   async getUnpracticedByUser(userId) {
     return await Dialogue.findAll({
       attributes: ["id", "topic", "createdAt"],

@@ -65,6 +65,15 @@ class DialogueController {
     }
   }
 
+  async getPracticed(req, res) {
+    try {
+      const dialogues = await dialogueService.getPracticedByUser(req.decoded.id);
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, dialogues);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.QUERY_FAILED);
+    }
+  }
+
   async getUnpracticed(req, res) {
     try {
       const dialogues = await dialogueService.getUnpracticedByUser(req.decoded.id);
@@ -96,6 +105,39 @@ class DialogueController {
       handleSuccess(res, SUCCESS_CODES.DIALOGUE.CREATE_SUCCESS, dialogue);
     } catch (error) {
       handleError(res, error, ERROR_CODES.DIALOGUE.CREATE_FAILED);
+    }
+  }
+
+  async generateDialogueForUser(req, res) {
+    try {
+      const { topic } = req.body;
+      if (!topic) {
+        return res.status(400).json({ status: "FAILED", message: "Topic is required.", errorCode: "DIALOGUE.MISSING_TOPIC" });
+      }
+      const dialogJson = await dialogueGeneratorService.generateDialogue(topic);
+      const dialogue = await dialogueService.createDialogue({ topic, dialogJson });
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.CREATE_SUCCESS, dialogue);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.CREATE_FAILED);
+    }
+  }
+
+  async generateTopicsForUser(req, res) {
+    try {
+      const count = parseInt(req.query.count) || 10;
+      const unique = req.query.unique === "true";
+
+      let topics;
+      if (unique) {
+        const existingTopics = await dialogueService.getAllTopics();
+        topics = await dialogueTopicGeneratorService.generateTopics(count, existingTopics);
+      } else {
+        topics = await dialogueTopicGeneratorService.generateTopics(count);
+      }
+
+      handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, topics);
+    } catch (error) {
+      handleError(res, error, ERROR_CODES.DIALOGUE.QUERY_FAILED);
     }
   }
 

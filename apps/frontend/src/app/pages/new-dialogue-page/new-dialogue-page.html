@@ -1,0 +1,220 @@
+<div class="ndp">
+
+  <!-- Page header -->
+  <header class="ndp__header">
+    <a routerLink="/dialogues" class="ndp__back">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Dialogues
+    </a>
+    <div>
+      <h1 class="ndp__title">New Dialogue</h1>
+      <p class="ndp__subtitle">Generate AI topic ideas, pick the ones you like, and create dialogues from them.</p>
+    </div>
+  </header>
+
+  <!-- Configuration card -->
+  <div class="ndp__card">
+    <h2 class="ndp__card-title">Topic Options</h2>
+
+    <!-- Topic type -->
+    <div class="ndp__field">
+      <span class="ndp__label">Topic type</span>
+      <div class="ndp__type-grid">
+        <button
+          class="ndp__type-btn"
+          [class.ndp__type-btn--active]="topicType() === 'unique'"
+          [disabled]="isGenerating()"
+          (click)="topicType.set('unique')"
+          type="button"
+        >
+          <span class="ndp__type-radio"></span>
+          <span class="ndp__type-content">
+            <span class="ndp__type-name">Unique</span>
+            <span class="ndp__type-hint">Only topics not yet in the library</span>
+          </span>
+        </button>
+        <button
+          class="ndp__type-btn"
+          [class.ndp__type-btn--active]="topicType() === 'any'"
+          [disabled]="isGenerating()"
+          (click)="topicType.set('any')"
+          type="button"
+        >
+          <span class="ndp__type-radio"></span>
+          <span class="ndp__type-content">
+            <span class="ndp__type-name">Any</span>
+            <span class="ndp__type-hint">Including topics already in the library</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Count -->
+    <div class="ndp__field">
+      <label class="ndp__label" for="ndp-count">Number of topics</label>
+      <div class="ndp__count-row">
+        <input
+          id="ndp-count"
+          class="ndp__count-input"
+          type="number"
+          [value]="count()"
+          (input)="onCountInput($event)"
+          [disabled]="isGenerating()"
+          min="1"
+          max="50"
+          placeholder="10"
+        />
+        <span class="ndp__count-suffix">topics (max 50)</span>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="ndp__card-actions">
+      <app-button [loading]="loadingTopics()" [disabled]="isGenerating()" (click)="generate()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Generate Topics
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Topic generation error -->
+  @if (topicError()) {
+    <div class="ndp__error" role="alert">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      {{ topicError() }}
+    </div>
+  }
+
+  <!-- Results -->
+  @if (hasResults()) {
+    <div class="ndp__results">
+
+      <!-- Results header -->
+      <div class="ndp__results-header">
+        <span class="ndp__results-title">
+          Topics
+          <span class="ndp__results-badge">{{ topics().length }}</span>
+        </span>
+        <button
+          class="ndp__select-all"
+          type="button"
+          (click)="toggleAll()"
+          [disabled]="isGenerating()"
+        >
+          @if (allNonDoneSelected()) {
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Deselect all
+          } @else {
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+            </svg>
+            Select all
+          }
+        </button>
+      </div>
+
+      <!-- Topic list -->
+      <div class="ndp__list">
+        @for (topic of topics(); track topic) {
+          <button
+            class="ndp__item"
+            [class.ndp__item--selected]="selectedTopics().has(topic)"
+            [class.ndp__item--idle]="topicState(topic) === 'idle'"
+            [class.ndp__item--done]="topicState(topic) === 'done'"
+            type="button"
+            [disabled]="isGenerating() || topicState(topic) === 'done'"
+            (click)="toggleTopic(topic)"
+          >
+            <!-- Checkbox -->
+            <span
+              class="ndp__checkbox"
+              [class.ndp__checkbox--checked]="selectedTopics().has(topic)"
+              [class.ndp__checkbox--done]="topicState(topic) === 'done'"
+              [class.ndp__checkbox--disabled]="isGenerating()"
+            >
+              @if (selectedTopics().has(topic) || topicState(topic) === 'done') {
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              }
+            </span>
+
+            <!-- Topic text -->
+            <span class="ndp__item-text">{{ topic }}</span>
+
+            <!-- Status icon (right side, only during/after generation) -->
+            @if (topicState(topic)) {
+              <span class="ndp__item-status">
+                @switch (topicState(topic)) {
+                  @case ('waiting') {
+                    <!-- Waiting: muted dot indicator -->
+                    <span class="ndp__status ndp__status--waiting" title="Waiting">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="4 3"/>
+                      </svg>
+                    </span>
+                  }
+                  @case ('generating') {
+                    <!-- Generating: spinner -->
+                    <span class="ndp__status ndp__status--generating" title="Generating...">
+                      <span class="ndp__row-spinner"></span>
+                    </span>
+                  }
+                  @case ('done') {
+                    <!-- Done: green checkmark -->
+                    <span class="ndp__status ndp__status--done" title="Created">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </span>
+                  }
+                  @case ('error') {
+                    <!-- Error: red X -->
+                    <span class="ndp__status ndp__status--error" title="Failed">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </span>
+                  }
+                }
+              </span>
+            }
+          </button>
+        }
+      </div>
+
+      <!-- Results footer -->
+      <div class="ndp__results-footer">
+        <!-- Counter (left) -->
+        @if (generationStarted()) {
+          <div class="ndp__gen-counter">
+            <span class="ndp__gen-nums">{{ completedCount() }}&thinsp;/&thinsp;{{ totalToGenerate() }}</span>
+            <span class="ndp__gen-label">created</span>
+          </div>
+        } @else {
+          <span></span>
+        }
+
+        <!-- Action button (right) -->
+        <app-button
+          [loading]="isGenerating()"
+          [disabled]="actionableSelectedCount() === 0 || isGenerating()"
+          (click)="startGeneration()"
+        >
+          Create {{ actionableSelectedCount() }} Dialogue{{ actionableSelectedCount() !== 1 ? 's' : '' }}
+        </app-button>
+      </div>
+
+    </div>
+  }
+
+</div>

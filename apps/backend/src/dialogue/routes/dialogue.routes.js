@@ -10,6 +10,9 @@ const {
 // Authenticated user routes
 router.get("/unpracticed/count", verifyToken, checkUserStatus, dialogueController.countUnpracticed);
 router.get("/unpracticed", verifyToken, checkUserStatus, dialogueController.getUnpracticed);
+router.get("/practiced", verifyToken, checkUserStatus, dialogueController.getPracticed);
+router.get("/topics/generate", verifyToken, checkUserStatus, dialogueController.generateTopicsForUser);
+router.post("/generate", verifyToken, checkUserStatus, dialogueController.generateDialogueForUser);
 router.get("/", verifyToken, checkUserStatus, dialogueController.getAllDialogues);
 router.get("/:id", verifyToken, checkUserStatus, dialogueController.getDialogueById);
 

@@ -1,4 +1,170 @@
-<section>
-  <h2>Dialogue List Page</h2>
-  <p>Ide kerul majd a parbeszedek listaja.</p>
-</section>
+<div class="dl">
+
+  <!-- Page header -->
+  <header class="dl__header">
+    <h1 class="dl__title">Dialogues</h1>
+    <p class="dl__subtitle">Practice English through real conversations</p>
+  </header>
+
+  <!-- Controls: tabs + new dialogue button -->
+  <div class="dl__controls">
+    <div class="dl__tabs" role="tablist">
+      <button
+        class="dl__tab"
+        [class.dl__tab--active]="activeTab() === 'new'"
+        (click)="activeTab.set('new')"
+        role="tab"
+        type="button"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        Not Practiced
+        <span class="dl__tab-count">{{ notPracticed().length }}</span>
+      </button>
+      <button
+        class="dl__tab"
+        [class.dl__tab--active]="activeTab() === 'practiced'"
+        (click)="activeTab.set('practiced')"
+        role="tab"
+        type="button"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Practiced
+        <span class="dl__tab-count">{{ practiced().length }}</span>
+      </button>
+    </div>
+
+    <app-button variant="secondary" size="sm" type="button" (click)="navigateToNew()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Dialogue
+    </app-button>
+  </div>
+
+  <!-- Tab content -->
+  <div class="dl__content" role="tabpanel">
+
+    <!-- Loading state -->
+    @if (loading()) {
+      <div class="dl__grid">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="dl__skeleton"></div>
+        }
+      </div>
+    }
+
+    <!-- Error state -->
+    @else if (error()) {
+      <div class="dl__error">
+        <div class="dl__error-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <p class="dl__error-text">{{ error() }}</p>
+        <app-button variant="secondary" size="sm" type="button" (click)="loadData()">
+          Try again
+        </app-button>
+      </div>
+    }
+
+    <!-- Content -->
+    @else {
+
+      <!-- Not practiced tab -->
+      @if (activeTab() === 'new') {
+        @if (notPracticed().length === 0) {
+          <div class="dl__empty">
+            <div class="dl__empty-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <h3 class="dl__empty-title">All caught up!</h3>
+            <p class="dl__empty-text">You've practiced every available dialogue. Create a new one to keep going.</p>
+          </div>
+        } @else {
+          <div class="dl__grid">
+            @for (item of notPracticed(); track item.id) {
+              <a class="dl__card" [routerLink]="['/dialogues', item.id]">
+                <div class="dl__card-top">
+                  <div class="dl__card-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="dl__card-body">
+                  <h3 class="dl__card-topic">{{ item.topic }}</h3>
+                </div>
+                <div class="dl__card-footer">
+                  <span class="dl__card-cta">Start practicing</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </div>
+              </a>
+            }
+          </div>
+        }
+      }
+
+      <!-- Practiced tab -->
+      @if (activeTab() === 'practiced') {
+        @if (practiced().length === 0) {
+          <div class="dl__empty">
+            <div class="dl__empty-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            </div>
+            <h3 class="dl__empty-title">No practice sessions yet</h3>
+            <p class="dl__empty-text">Start practicing a dialogue and it'll show up here with your progress.</p>
+          </div>
+        } @else {
+          <div class="dl__grid">
+            @for (item of practiced(); track item.id) {
+              <a class="dl__card dl__card--practiced" [routerLink]="['/dialogues', item.id]">
+                <div class="dl__card-top">
+                  <div class="dl__card-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </div>
+                  <span class="dl__score dl__score--{{ item.latestPractice.score.toLowerCase() }}">
+                    {{ item.latestPractice.score }}
+                  </span>
+                </div>
+                <div class="dl__card-body">
+                  <h3 class="dl__card-topic">{{ item.topic }}</h3>
+                  <div class="dl__card-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    {{ formatDate(item.latestPractice.learningDate) }}
+                  </div>
+                </div>
+                <div class="dl__card-footer">
+                  <span class="dl__card-cta">Practice again</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </div>
+              </a>
+            }
+          </div>
+        }
+      }
+
+    }
+
+  </div>
+</div>
