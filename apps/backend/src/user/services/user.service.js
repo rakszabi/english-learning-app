@@ -115,6 +115,26 @@ class UserService {
     return await this.getUserById(id);
   }
 
+  async updateLearningPreferences(email, prefs) {
+    const existingUser = await this.getUserByEmail(email);
+    if (!existingUser) {
+      return null;
+    }
+
+    const user = await User.findOne({ where: { email } });
+    const interests = Array.isArray(prefs.learningInterests)
+      ? prefs.learningInterests
+      : [];
+    await user.update({
+      learningLevelId: prefs.learningLevelId,
+      learningInterests: JSON.stringify(interests),
+      dailyNewDialoguesGoal: prefs.dailyNewDialoguesGoal,
+      dailyPracticeGoal: prefs.dailyPracticeGoal,
+    });
+
+    return await this.getUserByEmail(email);
+  }
+
   // Profil frissítése
   async updateProfile(email, profileRaw) {
     const existingUser = await this.getUserByEmail(email);

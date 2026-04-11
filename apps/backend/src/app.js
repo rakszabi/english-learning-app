@@ -51,9 +51,21 @@ app.use(routes);
 
 // Adatbázis kapcsolat és szerver indítása
 const sequelize = require("./shared/database-helpers/database");
-sequelize.sync({ alter: true }).then(() => {
-  logger.info("✅ Database synced");
-  app.listen(process.env.PORT, () => {
-    logger.info(`🚀 Server is running on port ${process.env.PORT}`);
+const {
+  fixUserLearningInterestsColumn,
+} = require("./shared/database-helpers/fix-user-learning-interests-column");
+
+sequelize
+  .authenticate()
+  .then(() => fixUserLearningInterestsColumn(sequelize))
+  .then(() => sequelize.sync({ alter: true }))
+  .then(() => {
+    logger.info("✅ Database synced");
+    app.listen(process.env.PORT, () => {
+      logger.info(`🚀 Server is running on port ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    logger.error("Database startup failed:", err);
+    process.exit(1);
   });
-});

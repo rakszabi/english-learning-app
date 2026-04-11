@@ -7,6 +7,12 @@ const { verifyToken, checkUserStatus } = require("../middlewares/auth.middleware
 router.post("/registration", profileController.userRegistration);
 router.get("/", verifyToken, checkUserStatus, profileController.getUserByEmail);
 router.put("/", verifyToken, checkUserStatus, profileController.updateProfile);
+router.put(
+  "/learning-preferences",
+  verifyToken,
+  checkUserStatus,
+  profileController.updateLearningPreferences
+);
 
 router.put("/change-password", verifyToken, checkUserStatus, profileController.changePassword);
 router.post(

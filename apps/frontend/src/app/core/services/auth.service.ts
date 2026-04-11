@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import type { LearningPreferences } from './learning-preferences.service';
 
 export interface User {
   id: number;
@@ -16,6 +17,7 @@ export interface User {
   emailVerifiedAt?: string;
   lastLoginAt?: string;
   createdAt?: string;
+  learningPreferences?: LearningPreferences;
 }
 
 export interface LoginResponse {

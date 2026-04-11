@@ -3,6 +3,13 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile.service';
 import { User } from '../../core/services/auth.service';
+import {
+  LearningPreferencesService,
+  LEARNING_LEVELS,
+  SUGGESTED_INTERESTS,
+  LearningLevelId,
+  LearningLevelOption,
+} from '../../core/services/learning-preferences.service';
 import { InputComponent } from '../../ui-components/input/input.component';
 import { ButtonComponent } from '../../ui-components/button/button.component';
 import { AvatarComponent } from '../../ui-components/avatar/avatar.component';
@@ -15,6 +22,25 @@ import { AvatarComponent } from '../../ui-components/avatar/avatar.component';
 })
 export class ProfilePage implements OnInit {
   private readonly profileService = inject(ProfileService);
+  private readonly learningPrefs = inject(LearningPreferencesService);
+
+  protected readonly learningLevels = LEARNING_LEVELS;
+  protected readonly suggestedInterests = SUGGESTED_INTERESTS;
+
+  /** Draft UI state for learning preferences (synced from service on load & after save) */
+  protected readonly learnLevelId = signal<LearningLevelId | null>(null);
+  protected readonly learnInterests = signal<string[]>([]);
+  /** Bound with ngModel (0–20 or empty = no target) */
+  protected learnDailyNew: number | null = null;
+  protected learnDailyPractice: number | null = null;
+  protected learnInterestDraft = '';
+  protected readonly learnPrefsSuccess = signal(false);
+  protected readonly learnPrefsError = signal<string | null>(null);
+  protected readonly savingLearnPrefs = signal(false);
+  protected readonly isEditingLearnPrefs = signal(false);
+
+  /** Saved snapshot (reactive) — shown in view mode */
+  protected readonly learnPrefsSaved = computed(() => this.learningPrefs.preferences());
 
   // ── Data ───────────────────────────────────────────────────────────────────
   protected readonly profile = signal<User | null>(null);
@@ -47,6 +73,8 @@ export class ProfilePage implements OnInit {
     this.profileService.getProfile().subscribe({
       next: (user) => {
         this.profile.set(user);
+        this.learningPrefs.hydrateFromUser(user.learningPreferences);
+        this.syncLearningPrefsFromService();
         this.loading.set(false);
       },
       error: () => {
@@ -54,6 +82,98 @@ export class ProfilePage implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  private syncLearningPrefsFromService(): void {
+    const p = this.learningPrefs.preferences();
+    this.learnLevelId.set(p.levelId);
+    this.learnInterests.set([...p.interests]);
+    this.learnDailyNew = p.dailyNewDialogues;
+    this.learnDailyPractice = p.dailyPracticeSessions;
+  }
+
+  protected selectLevel(id: LearningLevelId): void {
+    this.learnLevelId.set(id);
+  }
+
+  protected clearLearningLevel(): void {
+    this.learnLevelId.set(null);
+  }
+
+  protected toggleInterest(tag: string): void {
+    const t = tag.trim();
+    if (!t) return;
+    const list = this.learnInterests();
+    const lower = t.toLowerCase();
+    const exists = list.some((x) => x.toLowerCase() === lower);
+    this.learnInterests.set(
+      exists ? list.filter((x) => x.toLowerCase() !== lower) : [...list, t]
+    );
+  }
+
+  protected interestSelected(tag: string): boolean {
+    return this.learnInterests().some((x) => x.toLowerCase() === tag.toLowerCase());
+  }
+
+  protected addCustomInterest(): void {
+    const t = this.learnInterestDraft.trim();
+    if (!t) return;
+    const list = this.learnInterests();
+    if (list.some((x) => x.toLowerCase() === t.toLowerCase())) {
+      this.learnInterestDraft = '';
+      return;
+    }
+    this.learnInterests.set([...list, t]);
+    this.learnInterestDraft = '';
+  }
+
+  protected levelOption(id: LearningLevelId | null): LearningLevelOption | null {
+    if (id == null) return null;
+    return LEARNING_LEVELS.find((l) => l.id === id) ?? null;
+  }
+
+  protected startEditLearnPrefs(): void {
+    this.syncLearningPrefsFromService();
+    this.learnInterestDraft = '';
+    this.learnPrefsSuccess.set(false);
+    this.learnPrefsError.set(null);
+    this.isEditingLearnPrefs.set(true);
+  }
+
+  protected cancelEditLearnPrefs(): void {
+    this.syncLearningPrefsFromService();
+    this.learnPrefsError.set(null);
+    this.isEditingLearnPrefs.set(false);
+  }
+
+  protected saveLearningPreferences(): void {
+    if (this.savingLearnPrefs()) return;
+    this.savingLearnPrefs.set(true);
+    this.learnPrefsError.set(null);
+
+    this.learningPrefs
+      .saveToServer({
+        levelId: this.learnLevelId(),
+        interests: this.learnInterests(),
+        dailyNewDialogues: this.learnDailyNew,
+        dailyPracticeSessions: this.learnDailyPractice,
+      })
+      .subscribe({
+        next: (user) => {
+          this.profile.set(user);
+          this.syncLearningPrefsFromService();
+          this.savingLearnPrefs.set(false);
+          this.isEditingLearnPrefs.set(false);
+          this.learnPrefsSuccess.set(true);
+          setTimeout(() => this.learnPrefsSuccess.set(false), 3500);
+        },
+        error: (err) => {
+          this.savingLearnPrefs.set(false);
+          this.learnPrefsError.set(
+            err?.error?.message ?? 'Failed to save learning preferences. Please try again.'
+          );
+        },
+      });
   }
 
   // ── Info edit handlers ─────────────────────────────────────────────────────
@@ -88,6 +208,7 @@ export class ProfilePage implements OnInit {
       .subscribe({
         next: (user) => {
           this.profile.set(user);
+          this.learningPrefs.hydrateFromUser(user.learningPreferences);
           this.savingInfo.set(false);
           this.isEditingInfo.set(false);
           this.infoSuccess.set(true);
@@ -132,7 +253,9 @@ export class ProfilePage implements OnInit {
     this.passwordError.set(null);
 
     this.profileService.changePassword(this.passwordForm.old, this.passwordForm.new).subscribe({
-      next: () => {
+      next: (user) => {
+        this.profile.set(user);
+        this.learningPrefs.hydrateFromUser(user.learningPreferences);
         this.savingPassword.set(false);
         this.isChangingPassword.set(false);
         this.passwordSuccess.set(true);

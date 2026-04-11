@@ -48,6 +48,14 @@
         Password changed successfully.
       </div>
     }
+    @if (learnPrefsSuccess()) {
+      <div class="pp__toast">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Learning preferences saved.
+      </div>
+    }
 
     <!-- Hero -->
     <div class="pp__hero">
@@ -114,6 +122,165 @@
           <div class="pp__form-actions">
             <app-button variant="ghost" size="sm" type="button" [disabled]="savingInfo()" (click)="cancelEditInfo()">Cancel</app-button>
             <app-button size="sm" type="button" [loading]="savingInfo()" (click)="saveInfo()">Save changes</app-button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Learning preferences -->
+    <div class="pp__card pp__card--prefs">
+      <div class="pp__card-header">
+        <div>
+          <h2 class="pp__card-title">Learning preferences</h2>
+          <p class="pp__card-hint">Helps tailor dialogue difficulty, topics, and future stats to your goals.</p>
+        </div>
+        @if (!isEditingLearnPrefs()) {
+          <app-button variant="secondary" size="sm" type="button" (click)="startEditLearnPrefs()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit
+          </app-button>
+        }
+      </div>
+
+      @if (!isEditingLearnPrefs()) {
+        <div class="pp__fields">
+          <div class="pp__field">
+            <span class="pp__field-label">English level</span>
+            <div class="pp__field-stack">
+              @if (levelOption(learnPrefsSaved().levelId); as lvl) {
+                <span class="pp__field-value">{{ lvl.name }}</span>
+                <span class="pp__field-sub">{{ lvl.summary }}</span>
+              } @else {
+                <span class="pp__field-value pp__field-value--muted">Not set</span>
+              }
+            </div>
+          </div>
+          <div class="pp__field">
+            <span class="pp__field-label">Interests</span>
+            <span class="pp__field-value">
+              @if (learnPrefsSaved().interests.length > 0) {
+                {{ learnPrefsSaved().interests.join(', ') }}
+              } @else {
+                <span class="pp__field-value--muted">Not set</span>
+              }
+            </span>
+          </div>
+          <div class="pp__field">
+            <span class="pp__field-label">New dialogues / day</span>
+            <span class="pp__field-value">
+              @if (learnPrefsSaved().dailyNewDialogues != null) {
+                {{ learnPrefsSaved().dailyNewDialogues }}
+              } @else {
+                <span class="pp__field-value--muted">Not set</span>
+              }
+            </span>
+          </div>
+          <div class="pp__field">
+            <span class="pp__field-label">Practice sessions / day</span>
+            <span class="pp__field-value">
+              @if (learnPrefsSaved().dailyPracticeSessions != null) {
+                {{ learnPrefsSaved().dailyPracticeSessions }}
+              } @else {
+                <span class="pp__field-value--muted">Not set</span>
+              }
+            </span>
+          </div>
+        </div>
+      } @else {
+        <div class="pp__prefs-body">
+          <section class="pp__prefs-section">
+            <h3 class="pp__prefs-label">English level</h3>
+            <p class="pp__prefs-desc">Pick the stage that best matches you. CEFR ranges are approximate guides.</p>
+            <div class="pp__level-grid">
+              @for (lvl of learningLevels; track lvl.id) {
+                <button
+                  type="button"
+                  class="pp__level-card"
+                  [class.pp__level-card--active]="learnLevelId() === lvl.id"
+                  (click)="selectLevel(lvl.id)"
+                >
+                  <span class="pp__level-badge">{{ lvl.id }}</span>
+                  <span class="pp__level-name">{{ lvl.name }}</span>
+                  <span class="pp__level-summary">{{ lvl.summary }}</span>
+                </button>
+              }
+            </div>
+            @if (learnLevelId() !== null) {
+              <button type="button" class="pp__prefs-clear" (click)="clearLearningLevel()">Clear level</button>
+            }
+          </section>
+
+          <section class="pp__prefs-section">
+            <h3 class="pp__prefs-label">Interests</h3>
+            <p class="pp__prefs-desc">Topics you enjoy — we’ll use them to tailor content later.</p>
+            <div class="pp__chip-row">
+              @for (tag of suggestedInterests; track tag) {
+                <button
+                  type="button"
+                  class="pp__chip"
+                  [class.pp__chip--on]="interestSelected(tag)"
+                  (click)="toggleInterest(tag)"
+                >{{ tag }}</button>
+              }
+            </div>
+            <div class="pp__interest-add">
+              <input
+                class="pp__interest-input"
+                type="text"
+                placeholder="Add your own topic…"
+                [(ngModel)]="learnInterestDraft"
+                (keydown.enter)="$event.preventDefault(); addCustomInterest()"
+              />
+              <app-button variant="secondary" size="sm" type="button" (click)="addCustomInterest()">Add</app-button>
+            </div>
+            @if (learnInterests().length > 0) {
+              <p class="pp__prefs-foot">{{ learnInterests().length }} selected: {{ learnInterests().join(', ') }}</p>
+            }
+          </section>
+
+          <section class="pp__prefs-section">
+            <h3 class="pp__prefs-label">Daily goals</h3>
+            <p class="pp__prefs-desc">Rough targets per day (0–20). Leave empty if you don’t want a number goal.</p>
+            <div class="pp__goals-row">
+              <div class="pp__goal-field">
+                <label class="pp__goal-label" for="daily-new">New dialogues to learn</label>
+                <input
+                  id="daily-new"
+                  class="pp__goal-input"
+                  type="number"
+                  min="0"
+                  max="20"
+                  step="1"
+                  placeholder="—"
+                  [(ngModel)]="learnDailyNew"
+                />
+              </div>
+              <div class="pp__goal-field">
+                <label class="pp__goal-label" for="daily-practice">Review / practice sessions</label>
+                <input
+                  id="daily-practice"
+                  class="pp__goal-input"
+                  type="number"
+                  min="0"
+                  max="20"
+                  step="1"
+                  placeholder="—"
+                  [(ngModel)]="learnDailyPractice"
+                />
+              </div>
+            </div>
+          </section>
+
+          @if (learnPrefsError()) {
+            <p class="pp__error">{{ learnPrefsError() }}</p>
+          }
+
+          <div class="pp__form-actions pp__form-actions--prefs">
+            <app-button variant="ghost" size="sm" type="button" [disabled]="savingLearnPrefs()" (click)="cancelEditLearnPrefs()">Cancel</app-button>
+            <app-button size="sm" type="button" [loading]="savingLearnPrefs()" (click)="saveLearningPreferences()">Save changes</app-button>
           </div>
         </div>
       }

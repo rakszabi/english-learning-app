@@ -55,6 +55,24 @@ const User = sequelize.define(
       defaultValue: "local",
       validate: { isIn: [["local"]] },
     },
+    learningLevelId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    // TEXT + JSON string: shared MySQL hosts often break on native JSON + alter/sync
+    learningInterests: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: "[]",
+    },
+    dailyNewDialoguesGoal: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    dailyPracticeGoal: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     defaultScope: {
@@ -67,6 +85,12 @@ const User = sequelize.define(
     hooks: {
       beforeValidate(user) {
         if (user.email) user.email = user.email.trim().toLowerCase();
+      },
+      beforeSave(user) {
+        const v = user.getDataValue("learningInterests");
+        if (Array.isArray(v)) {
+          user.setDataValue("learningInterests", JSON.stringify(v));
+        }
       },
     },
   }

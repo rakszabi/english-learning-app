@@ -115,6 +115,249 @@ $mobile: 640px;
     letter-spacing: -0.01em;
   }
 
+  &__card-hint {
+    margin-top: 0.35rem;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    max-width: 52ch;
+  }
+
+  &__card--prefs .pp__card-header {
+    align-items: flex-start;
+  }
+
+  // ── Learning preferences ───────────────────────────────────────────────────
+  &__prefs-body {
+    padding: 1.25rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+
+    @media (max-width: $mobile) {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+  }
+
+  &__prefs-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__prefs-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  &__prefs-desc {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  &__prefs-foot {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+
+  &__prefs-clear {
+    align-self: flex-start;
+    margin-top: 0.25rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+
+  &__form-actions--prefs {
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  &__level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  &__level-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    text-align: left;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      border-color: rgba(79, 70, 229, 0.35);
+      background: rgba(79, 70, 229, 0.03);
+    }
+
+    &--active {
+      border-color: var(--color-primary);
+      background: rgba(79, 70, 229, 0.06);
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.12);
+    }
+  }
+
+  &__level-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: rgba(79, 70, 229, 0.12);
+  }
+
+  &__level-card--active &__level-badge {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  &__level-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  &__level-summary {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+  }
+
+  &__chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__chip {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    border-radius: 99px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: rgba(79, 70, 229, 0.4);
+      color: var(--color-primary);
+    }
+
+    &--on {
+      border-color: var(--color-primary);
+      background: rgba(79, 70, 229, 0.08);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+  }
+
+  &__interest-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+
+  &__interest-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-family: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-border-focus);
+      box-shadow: var(--shadow-focus);
+    }
+
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+  }
+
+  &__goals-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: $mobile) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__goal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  &__goal-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+
+  &__goal-input {
+    max-width: 120px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    font-family: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-border-focus);
+      box-shadow: var(--shadow-focus);
+    }
+
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+  }
+
   // ── Field list (view mode) ─────────────────────────────────────────────────
   &__fields {
     display: flex;
@@ -162,6 +405,19 @@ $mobile: 640px;
       color: var(--color-text-muted);
       letter-spacing: 0.1em;
     }
+  }
+
+  &__field-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  &__field-sub {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--color-text-secondary);
   }
 
   // ── Badges ─────────────────────────────────────────────────────────────────
