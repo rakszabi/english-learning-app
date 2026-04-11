@@ -56,35 +56,84 @@ class DialogueService {
     });
   }
 
+  _scoreToNumber(score) {
+    if (score === "EASY") return 3;
+    if (score === "MEDIUM") return 2;
+    return 1;
+  }
+
+  _roundedAverageToScoreLabel(rounded) {
+    if (rounded >= 3) return "EASY";
+    if (rounded >= 2) return "MEDIUM";
+    return "HARD";
+  }
+
   async getPracticedByUser(userId) {
     const practices = await DialoguePractice.findAll({
       where: { userId },
       include: [{ model: Dialogue, as: "dialogue", attributes: ["id", "topic", "createdAt"] }],
-      order: [["learningDate", "DESC"]],
+      order: [
+        ["learningDate", "DESC"],
+        ["id", "DESC"],
+      ],
       attributes: ["score", "learningDate", "dialogueId"],
     });
 
-    const seenIds = new Set();
-    const result = [];
-    for (const practice of practices) {
-      if (!seenIds.has(practice.dialogueId)) {
-        seenIds.add(practice.dialogueId);
-        result.push({
-          id: practice.dialogue.id,
-          topic: practice.dialogue.topic,
-          createdAt: practice.dialogue.createdAt,
-          latestPractice: {
-            score: practice.score,
-            learningDate: practice.learningDate,
-          },
+    const byDialogue = new Map();
+    for (const p of practices) {
+      const dId = p.dialogueId;
+      if (!byDialogue.has(dId)) {
+        byDialogue.set(dId, {
+          dialogue: p.dialogue,
+          latest: p,
+          scores: [],
         });
       }
+      byDialogue.get(dId).scores.push(p.score);
     }
-    return result;
+
+    const rows = Array.from(byDialogue.values()).map(
+      ({ dialogue, latest, scores }) => {
+        const n = scores.length;
+        const avgNum =
+          scores.reduce((sum, s) => sum + this._scoreToNumber(s), 0) / n;
+        const averageScore = this._roundedAverageToScoreLabel(Math.round(avgNum));
+        const scoreBreakdown = scores.reduce(
+          (acc, s) => {
+            acc[s] = (acc[s] || 0) + 1;
+            return acc;
+          },
+          { EASY: 0, MEDIUM: 0, HARD: 0 }
+        );
+        return {
+          id: dialogue.id,
+          topic: dialogue.topic,
+          createdAt: dialogue.createdAt,
+          practiced: true,
+          practiceCount: n,
+          latestPractice: {
+            score: latest.score,
+            learningDate: latest.learningDate,
+          },
+          averageScore,
+          scoreBreakdown,
+        };
+      }
+    );
+
+    rows.sort((a, b) => {
+      const da = String(b.latestPractice.learningDate).localeCompare(
+        String(a.latestPractice.learningDate)
+      );
+      if (da !== 0) return da;
+      return b.id - a.id;
+    });
+
+    return rows;
   }
 
   async getUnpracticedByUser(userId) {
-    return await Dialogue.findAll({
+    const rows = await Dialogue.findAll({
       attributes: ["id", "topic", "createdAt"],
       include: [
         {
@@ -98,6 +147,13 @@ class DialogueService {
       where: { "$practices.id$": { [Op.is]: null } },
       order: [["createdAt", "DESC"]],
     });
+    return rows.map((d) => ({
+      id: d.id,
+      topic: d.topic,
+      createdAt: d.createdAt,
+      practiced: false,
+      practiceCount: 0,
+    }));
   }
 
   async queryDialogues({ pagination, sort, search, filters }) {

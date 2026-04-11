@@ -7,16 +7,29 @@ export interface DialogueItem {
   id: number;
   topic: string;
   createdAt: string;
+  practiced: false;
+  practiceCount: 0;
+}
+
+export interface PracticedDialogueScoreBreakdown {
+  EASY: number;
+  MEDIUM: number;
+  HARD: number;
 }
 
 export interface PracticedDialogueItem {
   id: number;
   topic: string;
   createdAt: string;
+  practiced: true;
+  practiceCount: number;
   latestPractice: {
     score: 'EASY' | 'MEDIUM' | 'HARD';
     learningDate: string;
   };
+  /** Rounded mean of session scores (EASY=3, MEDIUM=2, HARD=1). */
+  averageScore: 'EASY' | 'MEDIUM' | 'HARD';
+  scoreBreakdown: PracticedDialogueScoreBreakdown;
 }
 
 export interface DialogueLine {
