@@ -1,6 +1,7 @@
 const dialogueService = require("../services/dialogue.service");
 const dialogueTopicGeneratorService = require("../services/dialogue-topic-generator.service");
 const dialogueGeneratorService = require("../services/dialogue-generator.service");
+const userService = require("../../user/services/user.service");
 const { ERROR_CODES } = require("../../shared/response-helpers/response-helper");
 const { DialogueErrors, handleError } = require("../../shared/response-helpers/error-helper");
 const { SUCCESS_CODES, handleSuccess } = require("../../shared/response-helpers/success-helper");
@@ -114,7 +115,8 @@ class DialogueController {
       if (!topic) {
         return res.status(400).json({ status: "FAILED", message: "Topic is required.", errorCode: "DIALOGUE.MISSING_TOPIC" });
       }
-      const dialogJson = await dialogueGeneratorService.generateDialogue(topic);
+      const learnerContext = await userService.getAiLearningContext(req.decoded.id);
+      const dialogJson = await dialogueGeneratorService.generateDialogue(topic, learnerContext);
       const dialogue = await dialogueService.createDialogue({ topic, dialogJson });
       handleSuccess(res, SUCCESS_CODES.DIALOGUE.CREATE_SUCCESS, dialogue);
     } catch (error) {
@@ -126,13 +128,22 @@ class DialogueController {
     try {
       const count = parseInt(req.query.count) || 10;
       const unique = req.query.unique === "true";
+      const learnerContext = await userService.getAiLearningContext(req.decoded.id);
 
       let topics;
       if (unique) {
         const existingTopics = await dialogueService.getAllTopics();
-        topics = await dialogueTopicGeneratorService.generateTopics(count, existingTopics);
+        topics = await dialogueTopicGeneratorService.generateTopics(
+          count,
+          existingTopics,
+          learnerContext
+        );
       } else {
-        topics = await dialogueTopicGeneratorService.generateTopics(count);
+        topics = await dialogueTopicGeneratorService.generateTopics(
+          count,
+          [],
+          learnerContext
+        );
       }
 
       handleSuccess(res, SUCCESS_CODES.DIALOGUE.QUERY_SUCCESS, topics);

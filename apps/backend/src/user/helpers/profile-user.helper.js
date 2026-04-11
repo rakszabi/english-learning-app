@@ -47,4 +47,4 @@ function formatProfileUser(user) {
   return copy;
 }
 
-module.exports = { formatProfileUser };
+module.exports = { formatProfileUser, parseLearningInterests };

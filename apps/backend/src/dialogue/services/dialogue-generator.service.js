@@ -1,4 +1,5 @@
 const openai = require("../../shared/ai/openai");
+const { buildLearnerInstructionBlock } = require("../helpers/learner-prompt.helper");
 
 const SYSTEM_PROMPT = `You are an English language learning assistant.
 Your task is to generate a realistic, natural conversational dialogue between two people (speaker A and speaker B) based on a given topic.
@@ -6,6 +7,7 @@ Your task is to generate a realistic, natural conversational dialogue between tw
 Rules:
 - The dialogue must have between 8 and 12 lines total, alternating between speaker A and B.
 - Each line must be natural, practical English suitable for language learners.
+- When a learner profile is given, match difficulty (vocabulary, grammar, length) to that level.
 - Provide an accurate Hungarian translation for every line.
 - Return ONLY a valid JSON object with this exact structure, no extra text or markdown:
 {
@@ -17,12 +19,19 @@ Rules:
 }`;
 
 class DialogueGeneratorService {
-  async generateDialogue(topic) {
+  /**
+   * @param {string} topic
+   * @param {null | { levelName: string|null, levelGuidance: string|null, interests: string[] }} learnerContext
+   */
+  async generateDialogue(topic, learnerContext = null) {
+    const learnerBlock = buildLearnerInstructionBlock(learnerContext);
+    const userContent = `Generate a dialogue about: "${topic}"${learnerBlock}`;
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `Generate a dialogue about: "${topic}"` },
+        { role: "user", content: userContent },
       ],
       response_format: { type: "json_object" },
       temperature: 0.8,

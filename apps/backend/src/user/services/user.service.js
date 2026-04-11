@@ -3,6 +3,9 @@ const User = require("../models/user.model");
 const queryDatabase = require("../../shared/database-helpers/query.helper");
 const { UserErrors } = require("../../shared/response-helpers/error-helper");
 const getAdjacentElements = require("../../shared/database-helpers/adjacent-element.helper");
+const {
+  buildAiLearningContextFromUserRow,
+} = require("../helpers/learning-context.helper");
 
 class UserService {
   // Új User létrehozása
@@ -71,6 +74,17 @@ class UserService {
     }
 
     return userData;
+  }
+
+  /**
+   * Learning level + interests for dialogue/topic AI prompts (null if nothing set).
+   */
+  async getAiLearningContext(userId) {
+    const user = await User.findByPk(userId, {
+      attributes: ["learningLevelId", "learningInterests"],
+    });
+    if (!user) return null;
+    return buildAiLearningContextFromUserRow(user.toJSON());
   }
 
   // Egy felhasználó lekérése email alapján
