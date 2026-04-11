@@ -133,6 +133,67 @@ $mobile: 640px;
     color: var(--color-text-muted);
   }
 
+  // ── Profile goals (compact, above chart) ─────────────────────────────────────
+  &__goals-compact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  &__goals-compact__date {
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    margin-right: 0.25rem;
+  }
+
+  &__goals-compact__chip {
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+
+    &--new {
+      border-color: #c7d2fe;
+      color: #3730a3;
+      background: #eef2ff;
+    }
+
+    &--sessions {
+      border-color: #fde68a;
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    &--met {
+      border-color: #a7f3d0;
+      color: #047857;
+      background: #ecfdf5;
+    }
+  }
+
+  &__goals-hint {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+    line-height: 1.45;
+  }
+
+  &__goals-link {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   // ── Chart card ───────────────────────────────────────────────────────────────
   &__chart-card {
     background: var(--color-surface);

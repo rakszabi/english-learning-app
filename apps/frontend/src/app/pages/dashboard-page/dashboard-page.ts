@@ -1,6 +1,12 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
-import { StatsService, DailyActivity } from '../../core/services/stats.service';
+import { RouterLink } from '@angular/router';
+import {
+  NgApexchartsModule,
+  ApexAnnotations,
+  ApexOptions,
+  YAxisAnnotations,
+} from 'ng-apexcharts';
+import { StatsService, DailyActivity, DashboardPayload } from '../../core/services/stats.service';
 
 interface StatCard {
   label: string;
@@ -11,7 +17,7 @@ interface StatCard {
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, RouterLink],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
@@ -20,8 +26,30 @@ export class DashboardPage implements OnInit {
 
   protected readonly loading = signal(true);
   protected readonly error = signal(false);
-  protected readonly activity = signal<DailyActivity[]>([]);
+  protected readonly payload = signal<DashboardPayload | null>(null);
   protected readonly selectedDays = signal<30 | 14 | 7>(30);
+
+  protected readonly activity = computed(() => this.payload()?.series ?? []);
+
+  protected readonly goals = computed(
+    () =>
+      this.payload()?.goals ?? {
+        dailyNewDialogues: null,
+        dailyPracticeSessions: null,
+      }
+  );
+
+  protected readonly today = computed(() => this.payload()?.today ?? null);
+
+  protected readonly insights = computed(() => this.payload()?.insights ?? null);
+
+  protected readonly hasGoals = computed(() => {
+    const g = this.goals();
+    return (
+      (g.dailyNewDialogues != null && g.dailyNewDialogues > 0) ||
+      (g.dailyPracticeSessions != null && g.dailyPracticeSessions > 0)
+    );
+  });
 
   protected readonly filtered = computed(() => {
     const days = this.selectedDays();
@@ -46,9 +74,58 @@ export class DashboardPage implements OnInit {
 
   protected readonly chartOptions = computed<ApexOptions>(() => {
     const data = this.filtered();
+    const g = this.goals();
     const categories = data.map((d) => this.formatLabel(d.date));
     const newSeries = data.map((d) => d.newCount);
     const reviewSeries = data.map((d) => d.reviewCount);
+
+    const totals = data.map((d) => d.newCount + d.reviewCount);
+    const peak = totals.length ? Math.max(...totals) : 0;
+    const goalCeiling = Math.max(
+      g.dailyNewDialogues ?? 0,
+      g.dailyPracticeSessions ?? 0,
+      peak,
+      1
+    );
+    const yMax = Math.max(4, Math.ceil(goalCeiling * 1.12));
+
+    const yaxisAnn: YAxisAnnotations[] = [];
+    if (g.dailyNewDialogues != null && g.dailyNewDialogues > 0) {
+      yaxisAnn.push({
+        y: g.dailyNewDialogues,
+        borderColor: '#818cf8',
+        strokeDashArray: 5,
+        borderWidth: 2,
+        label: {
+          text: `New goal ${g.dailyNewDialogues}`,
+          style: {
+            background: '#eef2ff',
+            color: '#3730a3',
+            fontSize: '10px',
+            fontWeight: 600,
+            padding: { left: 6, right: 6, top: 2, bottom: 2 },
+          },
+        },
+      });
+    }
+    if (g.dailyPracticeSessions != null && g.dailyPracticeSessions > 0) {
+      yaxisAnn.push({
+        y: g.dailyPracticeSessions,
+        borderColor: '#f59e0b',
+        strokeDashArray: 5,
+        borderWidth: 2,
+        label: {
+          text: `Sessions goal ${g.dailyPracticeSessions}`,
+          style: {
+            background: '#fffbeb',
+            color: '#b45309',
+            fontSize: '10px',
+            fontWeight: 600,
+            padding: { left: 6, right: 6, top: 2, bottom: 2 },
+          },
+        },
+      });
+    }
 
     return {
       series: [
@@ -57,7 +134,7 @@ export class DashboardPage implements OnInit {
       ],
       chart: {
         type: 'bar',
-        height: 260,
+        height: 280,
         stacked: true,
         toolbar: { show: false },
         animations: { enabled: true, speed: 400 },
@@ -76,6 +153,7 @@ export class DashboardPage implements OnInit {
       colors: ['#4f46e5', '#10b981'],
       dataLabels: { enabled: false },
       stroke: { show: false },
+      annotations: { yaxis: yaxisAnn },
       grid: {
         borderColor: 'rgba(0,0,0,0.06)',
         strokeDashArray: 4,
@@ -96,7 +174,7 @@ export class DashboardPage implements OnInit {
       },
       yaxis: {
         min: 0,
-        forceNiceScale: true,
+        max: yMax,
         labels: {
           style: { colors: '#94a3b8', fontSize: '11px', fontFamily: 'inherit' },
           formatter: (v: number) => (Number.isInteger(v) ? String(v) : ''),
@@ -129,6 +207,11 @@ export class DashboardPage implements OnInit {
     };
   });
 
+  /** Always defined so `apx-chart` [annotations] input type-checks. */
+  protected readonly chartAnnotations = computed(
+    (): ApexAnnotations => this.chartOptions().annotations ?? { yaxis: [] }
+  );
+
   ngOnInit(): void {
     this.load();
   }
@@ -140,9 +223,9 @@ export class DashboardPage implements OnInit {
   private load(): void {
     this.loading.set(true);
     this.error.set(false);
-    this.statsService.getDailyActivity(30).subscribe({
+    this.statsService.getDashboard(30).subscribe({
       next: (data) => {
-        this.activity.set(data);
+        this.payload.set(data);
         this.loading.set(false);
       },
       error: () => {

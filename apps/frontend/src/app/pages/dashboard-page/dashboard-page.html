@@ -59,6 +59,27 @@
         </div>
       </div>
 
+      @if (hasGoals() && today(); as t) {
+        <div class="dash__goals-compact">
+          <span class="dash__goals-compact__date">{{ t.date }}</span>
+          @if (insights()?.newDialogues; as gw) {
+            <span class="dash__goals-compact__chip dash__goals-compact__chip--new" [class.dash__goals-compact__chip--met]="gw.met">
+              New {{ gw.done }}/{{ gw.target }}
+            </span>
+          }
+          @if (insights()?.practiceSessions; as gp) {
+            <span class="dash__goals-compact__chip dash__goals-compact__chip--sessions" [class.dash__goals-compact__chip--met]="gp.met">
+              Sessions {{ gp.done }}/{{ gp.target }}
+            </span>
+          }
+        </div>
+      } @else {
+        <p class="dash__goals-hint">
+          <a routerLink="/profile" class="dash__goals-link">Set goals in Profile</a>
+          <span> to show targets and lines on the chart.</span>
+        </p>
+      }
+
       @if (filtered().every(d => d.newCount + d.reviewCount === 0)) {
         <div class="dash__empty-chart">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -74,6 +95,7 @@
           [colors]="chartOptions().colors!"
           [dataLabels]="chartOptions().dataLabels!"
           [stroke]="chartOptions().stroke!"
+          [annotations]="chartAnnotations()"
           [grid]="chartOptions().grid!"
           [xaxis]="chartOptions().xaxis!"
           [yaxis]="chartOptions().yaxis!"
