@@ -8,6 +8,7 @@
   "scripts": {
     "backend": "npm run dev --workspace=apps/backend",
     "frontend": "npm run start --workspace=apps/frontend",
+    "build:frontend": "npm run build --workspace=apps/frontend",
     "dev": "npx concurrently \"npm run backend\" \"npm run frontend\""
   },
   "devDependencies": {

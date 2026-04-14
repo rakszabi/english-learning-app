@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/app.js",
     "build": "tsc",
-    "start": "node dist/app.js"
+    "start": "nodemon src/app.js"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
