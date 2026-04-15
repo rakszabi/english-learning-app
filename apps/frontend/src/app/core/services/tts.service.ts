@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export type TtsDialogueSpeaker = 'A' | 'B';
+
 @Injectable({ providedIn: 'root' })
 export class TtsService {
   private readonly http = inject(HttpClient);
@@ -19,12 +21,12 @@ export class TtsService {
 
   // ── Single line ────────────────────────────────────────────────────────────
 
-  speak(text: string, key: string): void {
+  speak(text: string, key: string, speaker: TtsDialogueSpeaker): void {
     this.stop();
     this.playingKey.set(key);
 
     this.http
-      .post(this.url, { text }, { responseType: 'arraybuffer' })
+      .post(this.url, { text, speaker }, { responseType: 'arraybuffer' })
       .subscribe({
         next: (buffer) => {
           if (this.playingKey() !== key) return;
@@ -39,13 +41,13 @@ export class TtsService {
 
   // ── All lines sequentially ─────────────────────────────────────────────────
 
-  speakAll(texts: string[]): void {
+  speakAll(segments: { text: string; speaker: TtsDialogueSpeaker }[]): void {
     this.stop();
     this.playingKey.set('all');
 
-    const requests = texts.map((text) =>
+    const requests = segments.map(({ text, speaker }) =>
       firstValueFrom(
-        this.http.post(this.url, { text }, { responseType: 'arraybuffer' })
+        this.http.post(this.url, { text, speaker }, { responseType: 'arraybuffer' })
       )
     );
 

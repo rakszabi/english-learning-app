@@ -6,14 +6,14 @@
       [class.dl__speak-all--active]="tts.playingKey() === 'all'"
       (click)="speakAll()"
       type="button"
-      title="Felolvas mindent"
+      title="Read everything aloud"
     >
       @if (tts.playingKey() === 'all') {
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-        Leállítás
+        Stop
       } @else {
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        Felolvas mindent
+        Read everything
       }
     </button>
   </div>
@@ -36,7 +36,7 @@
             [class.dl__speak-btn--active]="tts.playingKey() === $index.toString()"
             (click)="speakLine($index)"
             type="button"
-            [title]="tts.playingKey() === $index.toString() ? 'Leállítás' : 'Felolvasás'"
+            [title]="tts.playingKey() === $index.toString() ? 'Stop' : 'Read aloud'"
           >
             @if (tts.playingKey() === $index.toString()) {
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>

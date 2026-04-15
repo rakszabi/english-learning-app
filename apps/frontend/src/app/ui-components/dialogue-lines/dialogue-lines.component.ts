@@ -30,7 +30,7 @@ export class DialogueLinesComponent {
     if (this.tts.playingKey() === key) {
       this.tts.stop();
     } else {
-      this.tts.speak(line.en, key);
+      this.tts.speak(line.en, key, line.speaker);
     }
   }
 
@@ -39,6 +39,8 @@ export class DialogueLinesComponent {
       this.tts.stop();
       return;
     }
-    this.tts.speakAll(this.lines().map((l) => l.en));
+    this.tts.speakAll(
+      this.lines().map((l) => ({ text: l.en, speaker: l.speaker }))
+    );
   }
 }
