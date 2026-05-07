@@ -331,6 +331,10 @@ $mobile: 640px;
     transition: all 0.15s ease;
     white-space: nowrap;
     margin-top: 0.25rem;
+    position: sticky;
+    top: 0.75rem;
+    z-index: 20;
+    box-shadow: var(--shadow-sm);
 
     svg { flex-shrink: 0; }
 
@@ -343,6 +347,7 @@ $mobile: 640px;
     @media (max-width: $mobile) {
       align-self: flex-start;
       margin-top: 0;
+      top: 0.5rem;
     }
   }
 

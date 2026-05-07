@@ -18,20 +18,21 @@ $mobile: 640px;
   &__speak-all {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.75rem;
-    border-radius: var(--radius-md);
+    gap: 0.4rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.625rem;
     border: 1px solid var(--color-border);
     background: var(--color-surface);
     color: var(--color-text-secondary);
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition: all 0.15s ease;
 
     &:hover {
-      color: var(--color-text-primary);
-      border-color: var(--color-text-secondary);
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: rgba(79, 70, 229, 0.04);
     }
 
     &--active {
@@ -81,7 +82,7 @@ $mobile: 640px;
 
     @media (max-width: $mobile) {
       padding: 0.75rem 0.9375rem;
-      border-radius: var(--radius-md);
+      border-radius: 0.625rem;
     }
 
     .dl__line--b & {

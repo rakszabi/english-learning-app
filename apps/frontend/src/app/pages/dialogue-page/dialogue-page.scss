@@ -37,6 +37,17 @@ $mobile: 640px;
     justify-content: space-between;
     gap: 1rem;
     margin-bottom: 2rem;
+    position: sticky;
+    top: 60px;
+    z-index: 30;
+    padding: 0.5rem 0;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding-left: var(--page-padding-x);
+    padding-right: var(--page-padding-x);
+    box-sizing: border-box;
+    background: var(--color-bg);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.28);
 
     @media (max-width: $mobile) {
       flex-direction: column;
@@ -65,7 +76,7 @@ $mobile: 640px;
     word-break: break-word;
 
     @media (max-width: $mobile) {
-      font-size: var(--page-title-size-mobile);
+      font-size: 1.25rem;
     }
   }
 
@@ -86,7 +97,7 @@ $mobile: 640px;
     color: var(--color-text-secondary);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: 0.625rem;
     cursor: pointer;
     transition: all 0.15s ease;
     white-space: nowrap;
@@ -153,7 +164,7 @@ $mobile: 640px;
   }
 
   &__skeleton {
-    border-radius: var(--radius-md);
+    border-radius: 0.625rem;
     background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
     background-size: 600px 100%;
     animation: shimmer 1.4s ease-in-out infinite;
